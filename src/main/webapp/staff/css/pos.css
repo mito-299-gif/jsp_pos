@@ -1,0 +1,46 @@
+body {
+  background-color: #f5f6fa;
+  font-family: "Phetsarath OT";
+}
+.navbar-custom {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.product-card {
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  height: 100%;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+.product-card.selected {
+  border-color: #667eea;
+  background-color: #f0f4ff;
+}
+.product-img-container {
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background: #f8f9fa;
+}
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cart-panel {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 20px;
+}
+.cart-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+.low-stock {
+  background-color: #fff3cd;
+}

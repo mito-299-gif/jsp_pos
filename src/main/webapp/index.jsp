@@ -28,13 +28,13 @@ if ("POST".equals(request.getMethod())) {
             rs = ps.executeQuery();
             
             if (rs.next()) {
-                // Login successful
+                // ເຂົ້າສູ່ລະບົບສຳເລັດ
                 session.setAttribute("userId", rs.getInt("id"));
                 session.setAttribute("username", rs.getString("username"));
                 session.setAttribute("fullName", rs.getString("full_name"));
                 session.setAttribute("role", rs.getString("role"));
                 session.setMaxInactiveInterval(3600); // 1 hour
-                
+
                 String role = rs.getString("role");
                 if ("ADMIN".equals(role)) {
                     response.sendRedirect("admin/dashboard.jsp");
@@ -43,10 +43,10 @@ if ("POST".equals(request.getMethod())) {
                 }
                 return;
             } else {
-                request.setAttribute("error", "Invalid username or password");
+                request.setAttribute("error", "ຊື່ຜູ້ໃຊ້ຫຼືລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ");
             }
         } catch (Exception e) {
-            request.setAttribute("error", "System error: " + e.getMessage());
+            request.setAttribute("error", "ຂໍ້ຜິດພາດຂອງລະບົບ: " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (rs != null) try { rs.close(); } catch (SQLException e) {}
@@ -72,7 +72,7 @@ if (session.getAttribute("userId") != null) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Export POS System</title>
+    <title>ເຂົ້າສູ່ລະບົບ - ລະບົບ POS ສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -82,6 +82,7 @@ if (session.getAttribute("userId") != null) {
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Phetsarath OT';
         }
         .login-card {
             background: white;
@@ -107,8 +108,8 @@ if (session.getAttribute("userId") != null) {
         <div class="login-card mx-auto">
             <div class="login-header">
                 <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
-                <h3 class="mt-2">Export POS System</h3>
-                <p class="mb-0">ระบบจัดการส่งสินค้าออก</p>
+                <h3 class="mt-2">ລະບົບ POS ສົ່ງອອກ</h3>
+                <p class="mb-0">ລະບົບຈັດການສົ່ງສິນຄ້າອອກ</p>
             </div>
             <div class="login-body">
                 <% if (request.getAttribute("error") != null) { %>
@@ -118,33 +119,28 @@ if (session.getAttribute("userId") != null) {
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
                 <% } %>
-                
-                <form method="POST" action="login.jsp">
+
+                <form method="POST" action="index.jsp">
                     <div class="mb-3">
                         <label for="username" class="form-label">
-                            <i class="bi bi-person-fill"></i> Username
+                            <i class="bi bi-person-fill"></i> ຊື່ຜູ້ໃຊ້
                         </label>
-                        <input type="text" class="form-control form-control-lg" 
+                        <input type="text" class="form-control form-control-lg"
                                id="username" name="username" required autofocus>
                     </div>
                     <div class="mb-4">
                         <label for="password" class="form-label">
-                            <i class="bi bi-lock-fill"></i> Password
+                            <i class="bi bi-lock-fill"></i> ລະຫັດຜ່ານ
                         </label>
-                        <input type="password" class="form-control form-control-lg" 
+                        <input type="password" class="form-control form-control-lg"
                                id="password" name="password" required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="bi bi-box-arrow-in-right"></i> Login
+                        <i class="bi bi-box-arrow-in-right"></i> ເຂົ້າສູ່ລະບົບ
                     </button>
                 </form>
                 
-                <div class="mt-4 text-center text-muted">
-                    <small>
-                        <i class="bi bi-info-circle"></i> 
-                        Demo: admin/admin123 หรือ staff1/staff123
-                    </small>
-                </div>
+                
             </div>
         </div>
     </div>

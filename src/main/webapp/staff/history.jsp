@@ -10,7 +10,7 @@ if (session.getAttribute("userId") == null) {
 }
 
 int userId = (Integer) session.getAttribute("userId");
-DecimalFormat df = new DecimalFormat("#,##0.00");
+DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 // Get filter parameters
@@ -23,7 +23,7 @@ String searchCode = request.getParameter("searchCode");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ประวัติการส่งออก - Export POS</title>
+    <title>ປະຫວັດການສົ່ງອອກ - ລະບົບ POS ສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -43,7 +43,7 @@ String searchCode = request.getParameter("searchCode");
     <nav class="navbar navbar-dark navbar-custom mb-4">
         <div class="container-fluid">
             <span class="navbar-brand">
-                <i class="bi bi-clock-history"></i> ประวัติการส่งออก
+                <i class="bi bi-clock-history"></i> ປະຫວັດການສົ່ງອອກ
             </span>
             <div class="d-flex align-items-center text-white">
                 <i class="bi bi-person-circle me-2"></i>
@@ -52,10 +52,10 @@ String searchCode = request.getParameter("searchCode");
                     <i class="bi bi-shop"></i> POS
                 </a>
                 <a href="orders.jsp" class="btn btn-light btn-sm me-2">
-                    <i class="bi bi-receipt"></i> รายการสั่งซื้อ
+                    <i class="bi bi-receipt"></i> ລາຍການສັ່ງຊື້
                 </a>
                 <a href="../logout.jsp" class="btn btn-warning btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Logout
+                    <i class="bi bi-box-arrow-right"></i> ອອກຈາກລະບົບ
                 </a>
             </div>
         </div>
@@ -119,8 +119,8 @@ String searchCode = request.getParameter("searchCode");
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="text-muted">ยอดส่งออกทั้งหมด</h6>
-                                <h3><%= totalExports %> รายการ</h3>
+                                <h6 class="text-muted">ຍອດສົ່ງອອກທັງໝົດ</h6>
+                                <h3><%= totalExports %> ລາຍການ</h3>
                             </div>
                             <div class="bg-primary bg-opacity-10 rounded p-3">
                                 <i class="bi bi-truck text-primary" style="font-size: 2rem;"></i>
@@ -129,14 +129,14 @@ String searchCode = request.getParameter("searchCode");
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-4">
                 <div class="card stat-card border-info shadow-sm">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="text-muted">จำนวนสินค้า</h6>
-                                <h3><%= totalQuantity %> ชิ้น</h3>
+                                <h6 class="text-muted">ຈຳນວນສິນຄ້າ</h6>
+                                <h3><%= totalQuantity %> ຊິ້ນ</h3>
                             </div>
                             <div class="bg-info bg-opacity-10 rounded p-3">
                                 <i class="bi bi-box text-info" style="font-size: 2rem;"></i>
@@ -145,14 +145,14 @@ String searchCode = request.getParameter("searchCode");
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-4">
                 <div class="card stat-card border-success shadow-sm">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="text-muted">มูลค่ารวม</h6>
-                                <h3 class="text-success">฿<%= df.format(totalRevenue) %></h3>
+                                <h6 class="text-muted">ມູນຄ່າລວມ</h6>
+                                <h3 class="text-success"><%= df.format(totalRevenue) %> ກີບ</h3>
                             </div>
                             <div class="bg-success bg-opacity-10 rounded p-3">
                                 <i class="bi bi-cash-coin text-success" style="font-size: 2rem;"></i>
@@ -169,23 +169,23 @@ String searchCode = request.getParameter("searchCode");
                 <form method="GET" class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label">
-                            <i class="bi bi-calendar"></i> วันที่เริ่มต้น
+                            <i class="bi bi-calendar"></i> ວັນທີ່ເລີ່ມຕົ້ນ
                         </label>
-                        <input type="date" class="form-control" name="dateFrom" 
+                        <input type="date" class="form-control" name="dateFrom"
                                value="<%= dateFrom != null ? dateFrom : "" %>">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">
-                            <i class="bi bi-calendar"></i> วันที่สิ้นสุด
+                            <i class="bi bi-calendar"></i> ວັນທີ່ສິ້ນສຸດ
                         </label>
-                        <input type="date" class="form-control" name="dateTo" 
+                        <input type="date" class="form-control" name="dateTo"
                                value="<%= dateTo != null ? dateTo : "" %>">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">
-                            <i class="bi bi-search"></i> ค้นหารหัสส่งออก
+                            <i class="bi bi-search"></i> ຄົ້ນຫາລະຫັດສົ່ງອອກ
                         </label>
-                        <input type="text" class="form-control" name="searchCode" 
+                        <input type="text" class="form-control" name="searchCode"
                                placeholder="EXP..."
                                value="<%= searchCode != null ? searchCode : "" %>">
                     </div>
@@ -193,16 +193,16 @@ String searchCode = request.getParameter("searchCode");
                         <label class="form-label">&nbsp;</label>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search"></i> ค้นหา
+                                <i class="bi bi-search"></i> ຄົ້ນຫາ
                             </button>
                         </div>
                     </div>
                     <div class="col-12">
                         <a href="history.jsp" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle"></i> ล้างค่า
+                            <i class="bi bi-x-circle"></i> ລ້າງຄ່າ
                         </a>
                         <button type="button" class="btn btn-success btn-sm" onclick="window.print()">
-                            <i class="bi bi-printer"></i> Print
+                            <i class="bi bi-printer"></i> ພິມພິ້ນ
                         </button>
                     </div>
                 </form>
@@ -287,9 +287,9 @@ String searchCode = request.getParameter("searchCode");
                                 <td class="text-center">
                                     <span class="badge bg-secondary"><%= rs.getInt("quantity") %></span>
                                 </td>
-                                <td class="text-end">฿<%= df.format(rs.getDouble("unit_price")) %></td>
+                                <td class="text-end"><%= df.format(rs.getDouble("unit_price")) %> ກີບ</td>
                                 <td class="text-end text-success fw-bold">
-                                    ฿<%= df.format(rs.getDouble("total_price")) %>
+                                    <%= df.format(rs.getDouble("total_price")) %> ກີບ
                                 </td>
                                 <td>
                                     <% 
@@ -382,7 +382,7 @@ String searchCode = request.getParameter("searchCode");
                                         <td><%= rs.getString("product_name") %></td>
                                         <td class="text-end"><%= rs.getInt("total_qty") %></td>
                                         <td class="text-end text-success">
-                                            ฿<%= df.format(rs.getDouble("total_price")) %>
+                                            <%= df.format(rs.getDouble("total_price")) %> ກີບ
                                         </td>
                                     </tr>
                                     <%
@@ -456,7 +456,7 @@ String searchCode = request.getParameter("searchCode");
                                         <td><%= rs.getString("month_year") %></td>
                                         <td class="text-end"><%= rs.getInt("count") %></td>
                                         <td class="text-end text-success">
-                                            ฿<%= df.format(rs.getDouble("revenue")) %>
+                                            <%= df.format(rs.getDouble("revenue")) %> ກີບ
                                         </td>
                                     </tr>
                                     <%

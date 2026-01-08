@@ -63,7 +63,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการสั่งซื้อ - Export System</title>
+    <title>ລາຍການສັ່ງຊື້ - ລະບົບສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -106,7 +106,7 @@ try {
     <nav class="navbar navbar-dark navbar-custom mb-4">
         <div class="container-fluid">
             <span class="navbar-brand">
-                <i class="bi bi-receipt"></i> รายการสั่งซื้อ
+                <i class="bi bi-receipt"></i> ລາຍການສັ່ງຊື້
             </span>
             <div class="d-flex align-items-center text-white">
                 <i class="bi bi-person-circle me-2"></i>
@@ -115,10 +115,10 @@ try {
                     <i class="bi bi-shop"></i> POS
                 </a>
                 <a href="history.jsp" class="btn btn-light btn-sm me-2">
-                    <i class="bi bi-clock-history"></i> ประวัติ
+                    <i class="bi bi-clock-history"></i> ປະຫວັດ
                 </a>
                 <a href="../logout.jsp" class="btn btn-warning btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Logout
+                    <i class="bi bi-box-arrow-right"></i> ອອກຈາກລະບົບ
                 </a>
             </div>
         </div>
@@ -128,9 +128,9 @@ try {
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4><i class="bi bi-list-ul"></i> รายการสั่งซื้อทั้งหมด</h4>
+                    <h4><i class="bi bi-list-ul"></i> ລາຍການສັ່ງຊື້ທັງໝົດ</h4>
                     <div class="d-flex gap-2">
-                        <input type="text" id="searchOrder" class="form-control" placeholder="ค้นหาตามเลขที่สั่งซื้อ...">
+                        <input type="text" id="searchOrder" class="form-control" placeholder="ຄົ້ນຫາຕາມເລກທີ່ສັ່ງຊື້...">
                     </div>
                 </div>
 
@@ -138,10 +138,10 @@ try {
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
-                        <h5 class="text-muted mt-3">ไม่มีรายการสั่งซื้อ</h5>
-                        <p class="text-muted">ยังไม่มีรายการสั่งซื้อในระบบ</p>
+                        <h5 class="text-muted mt-3">ບໍ່ມີລາຍການສັ່ງຊື້</h5>
+                        <p class="text-muted">ຍັງບໍ່ມີລາຍການສັ່ງຊື້ໃນລະບົບ</p>
                         <a href="pos.jsp" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> สร้างรายการสั่งซื้อใหม่
+                            <i class="bi bi-plus-circle"></i> ສ້າງລາຍການສັ່ງຊື້ໃໝ່
                         </a>
                     </div>
                 </div>
@@ -158,8 +158,8 @@ try {
                                     <small><%= dateFormat.format(order.get("export_date")) %></small>
                                 </div>
                                 <div class="text-end">
-                                    <div class="h4 mb-0">฿<%= df.format(order.get("total_amount")) %></div>
-                                    <small><%= order.get("item_count") %> รายการ</small>
+                                    <div class="h4 mb-0">₭<%= df.format(order.get("total_amount")) %></div>
+                                    <small><%= order.get("item_count") %> ລາຍການ</small>
                                 </div>
                             </div>
                         </div>
@@ -167,17 +167,17 @@ try {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-2">
-                                        <strong>ผู้บันทึก:</strong> <%= order.get("user_name") %>
+                                        <strong>ຜູ້ບັນທຶກ:</strong> <%= order.get("user_name") %>
                                     </div>
                                     <% if (order.get("notes") != null && !order.get("notes").toString().trim().isEmpty()) { %>
                                     <div class="mb-2">
-                                        <strong>หมายเหตุ:</strong> <%= order.get("notes") %>
+                                        <strong>ຫມາຍເຫດ:</strong> <%= order.get("notes") %>
                                     </div>
                                     <% } %>
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <button class="btn btn-outline-primary btn-sm" onclick="viewOrderDetails('<%= order.get("export_code") %>')">
-                                        <i class="bi bi-eye"></i> ดูรายละเอียด
+                                        <i class="bi bi-eye"></i> ເບິ່ງລາຍລະອຽດ
                                     </button>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@ try {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="bi bi-receipt"></i> รายละเอียดคำสั่งซื้อ
+                        <i class="bi bi-receipt"></i> ລາຍລະອຽດຄຳສັ່ງຊື້
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -218,7 +218,7 @@ try {
                 })
                 .catch(error => {
                     console.error('Error loading order details:', error);
-                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+                    alert('ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ');
                 });
         }
 
@@ -230,7 +230,7 @@ try {
                 const orderDetails = document.querySelector('.order-details');
                 if (!orderDetails) {
                     console.error('Order details not found');
-                    alert('ไม่พบข้อมูลสำหรับพิมพ์');
+                    alert('ບໍ່ພົບຂໍ້ມູນສຳລັບພິມພິ້ນ');
                     return;
                 }
 
@@ -239,7 +239,7 @@ try {
 
                 // Create print header
                 const printHeader = '<div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">' +
-                    '<h2 style="margin: 0; color: #333;">ใบสั่งซื้อสินค้า</h2>' +
+                    '<h2 style="margin: 0; color: #333;">ໃບສັ່ງຊື້ສິນຄ້າ</h2>' +
                     '<p style="margin: 5px 0;">Export Order Receipt</p>' +
                     '</div>';
 
@@ -252,7 +252,7 @@ try {
                     printHeader +
                     '<div style="margin-top: 20px;">' + orderContent + '</div>' +
                     '<div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">' +
-                    'พิมพ์เมื่อ: ' + new Date().toLocaleString('th-TH') +
+                    'ພິມພິ້ນ: ' + new Date().toLocaleString('th-TH') +
                     '</div>' +
                     '</div>';
 
@@ -284,7 +284,7 @@ try {
 
             } catch (error) {
                 console.error('Print error:', error);
-                alert('เกิดข้อผิดพลาดในการพิมพ์: ' + error.message);
+                alert('ເກີດຂໍ້ຜິດພາດໃນການພິມພິ້ນ: ' + error.message);
             }
         }
 

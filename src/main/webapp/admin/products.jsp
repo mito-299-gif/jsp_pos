@@ -193,7 +193,7 @@ if ("get".equals(request.getParameter("action"))) {
     }
 }
 
-DecimalFormat df = new DecimalFormat("#,##0.00");
+DecimalFormat df = new DecimalFormat("#,##0");
 
 %>
 <!DOCTYPE html>
@@ -201,7 +201,7 @@ DecimalFormat df = new DecimalFormat("#,##0.00");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการสินค้า - Export POS</title>
+    <title>ຈັດການສິນຄ້າ - POS ສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -242,21 +242,21 @@ DecimalFormat df = new DecimalFormat("#,##0.00");
             <div class="col-md-2 sidebar p-0">
                 <div class="p-4 text-center border-bottom border-white border-opacity-25">
                     <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
-                    <h5 class="mt-2">Export POS</h5>
+                    <h5 class="mt-2">POS ສົ່ງອອກ</h5>
                     <small><%= session.getAttribute("fullName") %></small>
                 </div>
                 <nav class="mt-3">
                     <a href="dashboard.jsp">
-                        <i class="bi bi-speedometer2"></i> Dashboard
+                        <i class="bi bi-speedometer2"></i> ແດຊບອດ
                     </a>
                     <a href="products.jsp" class="active">
-                        <i class="bi bi-box"></i> จัดการสินค้า
+                        <i class="bi bi-box"></i> ຈັດການສິນຄ້າ
                     </a>
                     <a href="users.jsp">
-                        <i class="bi bi-people"></i> จัดการพนักงาน
+                        <i class="bi bi-people"></i> ຈັດການພະນັກງານ
                     </a>
                     <a href="reports.jsp">
-                        <i class="bi bi-file-earmark-text"></i> รายงาน
+                        <i class="bi bi-file-earmark-text"></i> ລາຍງານ
                     </a>
                     <hr class="border-white border-opacity-25">
                     <a href="../logout.jsp" class="text-warning">
