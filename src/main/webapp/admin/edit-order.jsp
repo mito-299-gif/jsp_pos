@@ -1,0 +1,305 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.*" %>
+<%
+
+if (session.getAttribute("userId") == null) {
+    response.sendRedirect("../index.jsp");
+    return;
+}
+
+String role = (String) session.getAttribute("role");
+if (!"ADMIN".equals(role)) {
+    response.sendRedirect("../staff/pos.jsp");
+    return;
+}
+
+String exportCode = request.getParameter("export_code");
+if (exportCode == null || exportCode.trim().isEmpty()) {
+    response.sendRedirect("dashboard.jsp");
+    return;
+}
+
+DecimalFormat df = new DecimalFormat("#,##0");
+SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+Map<String, Object> orderHeader = null;
+List<Map<String, Object>> orderItems = new ArrayList<>();
+
+Connection conn = null;
+PreparedStatement ps = null;
+ResultSet rs = null;
+
+try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
+        "root", "Admin"
+    );
+
+    String headerSql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
+                      "u.full_name as user_name, " +
+                      "SUM(e.total_price) as total_amount, " +
+                      "COUNT(e.product_id) as item_count " +
+                      "FROM exports e " +
+                      "LEFT JOIN users u ON e.user_id = u.id " +
+                      "WHERE e.export_code = ? " +
+                      "GROUP BY e.export_code, e.export_date, e.user_id, e.notes, u.full_name";
+
+    ps = conn.prepareStatement(headerSql);
+    ps.setString(1, exportCode);
+    rs = ps.executeQuery();
+
+    if (rs.next()) {
+        orderHeader = new HashMap<>();
+        orderHeader.put("export_code", rs.getString("export_code"));
+        orderHeader.put("export_date", rs.getTimestamp("export_date"));
+        orderHeader.put("user_name", rs.getString("user_name"));
+        orderHeader.put("total_amount", rs.getDouble("total_amount"));
+        orderHeader.put("item_count", rs.getInt("item_count"));
+        orderHeader.put("notes", rs.getString("notes"));
+    }
+    rs.close();
+    ps.close();
+
+    if (orderHeader == null) {
+        response.sendRedirect("dashboard.jsp");
+        return;
+    }
+
+    String itemsSql = "SELECT e.id, e.product_id, e.quantity, e.unit_price, e.total_price, " +
+                     "p.product_name, p.product_code, p.stock " +
+                     "FROM exports e " +
+                     "LEFT JOIN products p ON e.product_id = p.id " +
+                     "WHERE e.export_code = ? " +
+                     "ORDER BY p.product_name";
+
+    ps = conn.prepareStatement(itemsSql);
+    ps.setString(1, exportCode);
+    rs = ps.executeQuery();
+
+    while (rs.next()) {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", rs.getInt("id"));
+        item.put("product_id", rs.getInt("product_id"));
+        item.put("product_code", rs.getString("product_code"));
+        item.put("product_name", rs.getString("product_name"));
+        item.put("quantity", rs.getInt("quantity"));
+        item.put("unit_price", rs.getDouble("unit_price"));
+        item.put("total_price", rs.getDouble("total_price"));
+        item.put("stock", rs.getInt("stock"));
+        orderItems.add(item);
+    }
+
+} catch (Exception e) {
+    e.printStackTrace();
+    response.sendRedirect("dashboard.jsp");
+    return;
+} finally {
+    if (rs != null) try { rs.close(); } catch (SQLException e) {}
+    if (ps != null) try { ps.close(); } catch (SQLException e) {}
+    if (conn != null) try { conn.close(); } catch (SQLException e) {}
+}
+%>
+
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ແກ້ໄຂຄຳສັ່ງຊື້ - POS ສົ່ງອອກ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="./css/edit-order.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-2 sidebar p-0">
+                <div class="p-4 text-center border-bottom border-white border-opacity-25">
+                    <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
+                    <h5 class="mt-2">POS ສົ່ງອອກ</h5>
+                    <small><%= session.getAttribute("fullName") %></small>
+                </div>
+                <nav class="mt-3">
+                    <a href="dashboard.jsp">
+                        <i class="bi bi-speedometer2"></i> ໜ້າຫຼັກ
+                    </a>
+                    <a href="products.jsp">
+                        <i class="bi bi-box"></i> ຈັດການສິນຄ້າ
+                    </a>
+                    <a href="users.jsp">
+                        <i class="bi bi-people"></i> ຈັດການພະນັກງານ
+                    </a>
+                    <a href="reports.jsp">
+                        <i class="bi bi-file-earmark-text"></i> ລາຍງານ
+                    </a>
+                    <hr class="border-white border-opacity-25">
+                    <a href="../logout.jsp" class="text-warning">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </nav>
+            </div>
+
+       
+            <div class="col-md-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-pencil-square"></i> ແກ້ໄຂຄຳສັ່ງຊື້</h2>
+                    <div class="text-end">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar"></i> <%= new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()) %>
+                        </small>
+                    </div>
+                </div>
+
+                <% if ("1".equals(request.getParameter("success"))) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <strong>ສຳເລັດ!</strong> ບັນທຶກການແກ້ໄຂຄຳສັ່ງຊື້ແລ້ວ
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% } else if ("1".equals(request.getParameter("error"))) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>ເກີດຂໍ້ຜິດພາດ!</strong> ບໍ່ສາມາດບັນທຶກການແກ້ໄຂໄດ້
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% } %>
+
+          
+                <div class="edit-form">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5><strong>ເລກທີ່ສັ່ງຊື້:</strong> <%= orderHeader.get("export_code") %></h5>
+                            <p><strong>ວັນທີ:</strong> <%= dateFormat.format(orderHeader.get("export_date")) %></p>
+                            <p><strong>ຜູ້ບັນທຶກ:</strong> <%= orderHeader.get("user_name") %></p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <h4 class="text-success">ລວມທັງໝົດ: ₭<%= df.format(orderHeader.get("total_amount")) %></h4>
+                            <p class="mb-0"><%= orderHeader.get("item_count") %> ລາຍການ</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <form method="post" action="update-order.jsp" class="edit-form">
+                    <input type="hidden" name="export_code" value="<%= exportCode %>">
+
+                    <h5 class="mb-3"><i class="bi bi-list-check"></i> ແກ້ໄຂລາຍການສິນຄ້າ</h5>
+                    
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ລະຫັດສິນຄ້າ</th>
+                                    <th>ຊື່ສິນຄ້າ</th>
+                                    <th class="text-center">ຈຳນວນ</th>
+                                    <th class="text-end">ລາຄາຕໍ່ໜ່ວຍ</th>
+                                    <th class="text-end">ລວມ</th>
+                                    <th class="text-center">ການປະຕິບັດ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              <% for (Map<String, Object> item : orderItems) { %>
+                                <tr>
+                                    <td><%= item.get("product_code") %></td>
+                                    <td><%= item.get("product_name") %></td>
+                                    <td class="text-center">
+                                        <input type="number" name="quantity_<%= item.get("id") %>"
+                                               value="<%= item.get("quantity") %>"
+                                               min="0" max="<%= ((Integer)item.get("stock")) + ((Integer)item.get("quantity")) %>"
+                                               class="form-control quantity-input d-inline-block">
+                                    </td>
+                                    <td class="text-end">₭<%= df.format(item.get("unit_price")) %></td>
+                                    <td class="text-end" id="total_<%= item.get("id") %>">₭<%= df.format(item.get("total_price")) %></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                                onclick="removeItem(<%= item.get("id") %>)">
+                                            <i class="bi bi-trash"></i> ລຶບ
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% } %>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">ຫມາຍເຫດ</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"
+                                          placeholder="ເພີ່ມຫມາຍເຫດ..."><%= orderHeader.get("notes") != null ? orderHeader.get("notes") : "" %></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="mb-3">
+                                <strong>ລວມທັງໝົດໃໝ່: <span id="grand_total" class="text-success h5">₭<%= df.format(orderHeader.get("total_amount")) %></span></strong>
+                            </div>
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-check-circle"></i> ບັນທຶກການແກ້ໄຂ
+                            </button>
+                            <a href="dashboard.jsp" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> ຍົກເລີກ
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                updateTotals();
+            });
+        });
+
+        function updateTotals() {
+            let grandTotal = 0;
+
+            <% for (Map<String, Object> item : orderItems) { %>
+                const qty_<%= item.get("id") %> = document.querySelector('input[name="quantity_<%= item.get("id") %>"]').value;
+                const unitPrice_<%= item.get("id") %> = <%= item.get("unit_price") %>;
+                const total_<%= item.get("id") %> = qty_<%= item.get("id") %> * unitPrice_<%= item.get("id") %>;
+                document.getElementById('total_<%= item.get("id") %>').textContent = '₭' + total_<%= item.get("id") %>.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                grandTotal += total_<%= item.get("id") %>;
+            <% } %>
+
+            document.getElementById('grand_total').textContent = '₭' + grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function removeItem(itemId) {
+            if (confirm('ທ່ານແນ່ໃຈວ່າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກຄຳສັ່ງຊື້?')) {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = 'update-order.jsp';
+
+                const exportCodeInput = document.createElement('input');
+                exportCodeInput.type = 'hidden';
+                exportCodeInput.name = 'export_code';
+                exportCodeInput.value = '<%= exportCode %>';
+                form.appendChild(exportCodeInput);
+
+                const removeInput = document.createElement('input');
+                removeInput.type = 'hidden';
+                removeInput.name = 'remove_item';
+                removeInput.value = itemId;
+                form.appendChild(removeInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>
