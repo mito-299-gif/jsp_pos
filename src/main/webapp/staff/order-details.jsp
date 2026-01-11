@@ -25,14 +25,14 @@ try {
     );
 
 
-    String headerSql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
+    String headerSql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, e.customer, " +
                       "u.full_name as user_name, " +
                       "SUM(e.total_price) as total_amount, " +
                       "COUNT(e.product_id) as item_count " +
                       "FROM exports e " +
                       "LEFT JOIN users u ON e.user_id = u.id " +
                       "WHERE e.export_code = ? " +
-                      "GROUP BY e.export_code, e.export_date, e.user_id, e.notes, u.full_name";
+                      "GROUP BY e.export_code, e.export_date, e.user_id, e.notes, e.customer, u.full_name";
 
     ps = conn.prepareStatement(headerSql);
     ps.setString(1, exportCode);
@@ -47,6 +47,7 @@ try {
         orderHeader.put("total_amount", rs.getDouble("total_amount"));
         orderHeader.put("item_count", rs.getInt("item_count"));
         orderHeader.put("notes", rs.getString("notes"));
+        orderHeader.put("customer", rs.getString("customer"));
     }
     rs.close();
     ps.close();
@@ -90,7 +91,7 @@ try {
             <p><strong>ຜູ້ບັນທຶກ:</strong> <%= orderHeader.get("user_name") %></p>
         </div>
         <div class="col-md-6 text-end">
-            <h5 class="text-success">ລວມທັງໝົດ: ฿<%= df.format(orderHeader.get("total_amount")) %></h5>
+            <h5 class="text-success">ລວມທັງໝົດ: <%= df.format(orderHeader.get("total_amount")) %> ກີບ</h5>
             <p class="mb-0"><%= orderHeader.get("item_count") %> ລາຍການ</p>
         </div>
     </div>
@@ -98,6 +99,11 @@ try {
     <% if (orderHeader.get("notes") != null && !orderHeader.get("notes").toString().trim().isEmpty()) { %>
     <div class="mb-4">
         <strong>ແບບບັນທຶກ:</strong> <%= orderHeader.get("notes") %>
+    </div>
+    <% } %>
+        <% if (orderHeader.get("customer") != null && !orderHeader.get("customer").toString().trim().isEmpty()) { %>
+    <div class="mb-4">
+        <strong>ຜູ້ຮັບສິນຄ້າ:</strong> <%= orderHeader.get("customer") %>
     </div>
     <% } %>
 

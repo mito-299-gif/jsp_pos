@@ -14,6 +14,12 @@ DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
+String filterType = request.getParameter("filter");
+if (filterType == null) filterType = "all"; 
+
+int currentUserId = (Integer) session.getAttribute("userId");
+
+
 List<Map<String, Object>> orders = new ArrayList<>();
 Connection conn = null;
 PreparedStatement ps = null;
@@ -27,16 +33,31 @@ try {
     );
 
   
-    String sql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
-                 "u.full_name as user_name, " +
-                 "SUM(e.total_price) as total_amount, " +
-                 "COUNT(e.product_id) as item_count " +
-                 "FROM exports e " +
-                 "LEFT JOIN users u ON e.user_id = u.id " +
-                 "GROUP BY e.export_code, e.export_date, e.user_id, e.notes, u.full_name " +
-                 "ORDER BY e.export_date DESC";
+    StringBuilder sqlBuilder = new StringBuilder(
+        "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, e.customer, " +
+        "u.full_name as user_name, " +
+        "SUM(e.total_price) as total_amount, " +
+        "COUNT(e.product_id) as item_count " +
+        "FROM exports e " +
+        "LEFT JOIN users u ON e.user_id = u.id "
+    );
 
-    ps = conn.prepareStatement(sql);
+
+    if ("my".equals(filterType)) {
+        sqlBuilder.append("WHERE e.user_id = ? ");
+    } else if ("others".equals(filterType)) {
+        sqlBuilder.append("WHERE e.user_id != ? ");
+    }
+
+    sqlBuilder.append("GROUP BY e.export_code, e.export_date, e.user_id, e.notes, e.customer, u.full_name ");
+    sqlBuilder.append("ORDER BY e.export_date DESC");
+
+    ps = conn.prepareStatement(sqlBuilder.toString());
+
+    // Set parameter if filtering
+    if ("my".equals(filterType) || "others".equals(filterType)) {
+        ps.setInt(1, currentUserId);
+    }
     rs = ps.executeQuery();
 
     while (rs.next()) {
@@ -47,6 +68,7 @@ try {
         order.put("total_amount", rs.getDouble("total_amount"));
         order.put("item_count", rs.getInt("item_count"));
         order.put("notes", rs.getString("notes"));
+        order.put("customer", rs.getString("customer"));
         orders.add(order);
     }
 
@@ -69,6 +91,7 @@ try {
     <style>
         body {
             background-color: #f5f6fa;
+              font-family: "Phetsarath OT";
         }
         .navbar-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -127,10 +150,23 @@ try {
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4><i class="bi bi-list-ul"></i> ລາຍການສັ່ງຊື້ທັງໝົດ</h4>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4><i class="bi bi-list-ul"></i> ລາຍການສັ່ງຊື້ທັງໝົດ</h4>
+                        <div class="d-flex gap-2">
+                            <input type="text" id="searchOrder" class="form-control" placeholder="ຄົ້ນຫາຕາມເລກທີ່ສັ່ງຊື້...">
+                        </div>
+                    </div>
                     <div class="d-flex gap-2">
-                        <input type="text" id="searchOrder" class="form-control" placeholder="ຄົ້ນຫາຕາມເລກທີ່ສັ່ງຊື້...">
+                        <a href="?filter=all" class="btn btn-outline-primary <%= "all".equals(filterType) ? "active" : "" %>">
+                            <i class="bi bi-grid"></i> ເບິ່ງທັງໝົດ
+                        </a>
+                        <a href="?filter=my" class="btn btn-outline-success <%= "my".equals(filterType) ? "active" : "" %>">
+                            <i class="bi bi-person"></i> ຂອງຂ້ອຍເອງ
+                        </a>
+                        <a href="?filter=others" class="btn btn-outline-info <%= "others".equals(filterType) ? "active" : "" %>">
+                            <i class="bi bi-people"></i> ຂອງຄົນອື່ນ
+                        </a>
                     </div>
                 </div>
 
@@ -171,7 +207,10 @@ try {
                                     </div>
                                     <% if (order.get("notes") != null && !order.get("notes").toString().trim().isEmpty()) { %>
                                     <div class="mb-2">
-                                        <strong>ຫມາຍເຫດ:</strong> <%= order.get("notes") %>
+                                        <strong>ຊື່ຜູ້ຮັບ:</strong> <%= order.get("customer") %>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>ເບີໂທຜູ້ຮັບ:</strong> <%= order.get("notes") %>
                                     </div>
                                     <% } %>
                                 </div>

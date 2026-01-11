@@ -77,9 +77,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">ຫມາຍເຫດ</label>
+                            <label class="form-label">ເບີໂທ</label>
                             <textarea class="form-control" name="notes" rows="2"
-                                      placeholder="ຫມາຍເຫດເພີ່ມເຕີມ (ຖ້າມີ)"></textarea>
+                                      placeholder="ເບີໂທຜູ້ສັ່ງ"></textarea>
                         </div>
 
                         <div class="border-top pt-3 mb-3">

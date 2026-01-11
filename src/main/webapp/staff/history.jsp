@@ -29,6 +29,7 @@ String searchCode = request.getParameter("searchCode");
     <style>
         body {
             background-color: #f5f6fa;
+              font-family: "Phetsarath OT";
         }
         .navbar-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

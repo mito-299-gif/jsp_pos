@@ -78,8 +78,8 @@ if ("POST".equals(request.getMethod())) {
         
                     double totalPrice = unitPrice * quantity;
                     PreparedStatement psInsert = conn.prepareStatement(
-                        "INSERT INTO exports (export_code, product_id, quantity, unit_price, total_price, export_date, user_id, notes) " +
-                        "VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)"
+                        "INSERT INTO exports (export_code, product_id, quantity, unit_price, total_price, export_date, user_id, notes, customer) " +
+                        "VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)"
                     );
                     psInsert.setString(1, exportCode);
                     psInsert.setInt(2, productId);
@@ -88,6 +88,7 @@ if ("POST".equals(request.getMethod())) {
                     psInsert.setDouble(5, totalPrice);
                     psInsert.setInt(6, userId);
                     psInsert.setString(7, notes);
+                    psInsert.setString(8, recipientName);
                     psInsert.executeUpdate();
                     psInsert.close();
                 }
