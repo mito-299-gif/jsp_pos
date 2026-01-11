@@ -15,9 +15,42 @@ SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
 String filterType = request.getParameter("filter");
-if (filterType == null) filterType = "all"; 
+if (filterType == null) filterType = "all";
+
+String selectedUser = request.getParameter("user");
 
 int currentUserId = (Integer) session.getAttribute("userId");
+
+
+List<Map<String, Object>> allUsers = new ArrayList<>();
+Connection userConn = null;
+PreparedStatement userPs = null;
+ResultSet userRs = null;
+
+try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    userConn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
+        "root", "Admin"
+    );
+
+    userPs = userConn.prepareStatement("SELECT id, full_name FROM users WHERE id != ? AND full_name != 'Administrator' ORDER BY full_name");
+    userPs.setInt(1, currentUserId);
+    userRs = userPs.executeQuery();
+
+    while (userRs.next()) {
+        Map<String, Object> user = new HashMap<>();
+        user.put("id", userRs.getInt("id"));
+        user.put("full_name", userRs.getString("full_name"));
+        allUsers.add(user);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    if (userRs != null) try { userRs.close(); } catch (SQLException e) {}
+    if (userPs != null) try { userPs.close(); } catch (SQLException e) {}
+    if (userConn != null) try { userConn.close(); } catch (SQLException e) {}
+}
 
 
 List<Map<String, Object>> orders = new ArrayList<>();
@@ -45,6 +78,9 @@ try {
 
     if ("my".equals(filterType)) {
         sqlBuilder.append("WHERE e.user_id = ? ");
+    } else if ("others".equals(filterType) && selectedUser != null && !selectedUser.isEmpty()) {
+        // Filter by specific user
+        sqlBuilder.append("WHERE e.user_id = ? ");
     } else if ("others".equals(filterType)) {
         sqlBuilder.append("WHERE e.user_id != ? ");
     }
@@ -54,8 +90,13 @@ try {
 
     ps = conn.prepareStatement(sqlBuilder.toString());
 
-    // Set parameter if filtering
-    if ("my".equals(filterType) || "others".equals(filterType)) {
+
+    if ("my".equals(filterType)) {
+        ps.setInt(1, currentUserId);
+    } else if ("others".equals(filterType) && selectedUser != null && !selectedUser.isEmpty()) {
+
+        ps.setInt(1, Integer.parseInt(selectedUser));
+    } else if ("others".equals(filterType)) {
         ps.setInt(1, currentUserId);
     }
     rs = ps.executeQuery();
@@ -157,16 +198,28 @@ try {
                             <input type="text" id="searchOrder" class="form-control" placeholder="ຄົ້ນຫາຕາມເລກທີ່ສັ່ງຊື້...">
                         </div>
                     </div>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 align-items-center">
                         <a href="?filter=all" class="btn btn-outline-primary <%= "all".equals(filterType) ? "active" : "" %>">
                             <i class="bi bi-grid"></i> ເບິ່ງທັງໝົດ
                         </a>
                         <a href="?filter=my" class="btn btn-outline-success <%= "my".equals(filterType) ? "active" : "" %>">
                             <i class="bi bi-person"></i> ຂອງຂ້ອຍເອງ
                         </a>
-                        <a href="?filter=others" class="btn btn-outline-info <%= "others".equals(filterType) ? "active" : "" %>">
-                            <i class="bi bi-people"></i> ຂອງຄົນອື່ນ
-                        </a>
+                        <div class="d-flex gap-2 align-items-center">
+                            <a href="?filter=others" class="btn btn-outline-info <%= "others".equals(filterType) ? "active" : "" %>">
+                                <i class="bi bi-people"></i> ຂອງຄົນອື່ນ
+                            </a>
+                            <% if ("others".equals(filterType) && !allUsers.isEmpty()) { %>
+                            <select class="form-select form-select-sm" style="width: auto; min-width: 150px;" onchange="filterByUser(this.value)">
+                                <option value="">ເລືອກຜູ້ໃຊ້...</option>
+                                <% for (Map<String, Object> user : allUsers) { %>
+                                <option value="<%= user.get("id") %>" <%= (selectedUser != null && selectedUser.equals(user.get("id").toString())) ? "selected" : "" %>>
+                                    <%= user.get("full_name") %>
+                                </option>
+                                <% } %>
+                            </select>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
 
@@ -328,6 +381,14 @@ try {
         }
 
        
+        function filterByUser(userId) {
+            if (userId) {
+                window.location.href = '?filter=others&user=' + userId;
+            } else {
+                window.location.href = '?filter=others';
+            }
+        }
+
         document.getElementById('searchOrder').addEventListener('input', function(e) {
             const search = e.target.value.toLowerCase();
             document.querySelectorAll('.order-card').forEach(card => {
