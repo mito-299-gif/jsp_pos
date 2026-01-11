@@ -15,40 +15,57 @@ String exportType = request.getParameter("export");
 if (exportType != null) {
     String dateFrom = request.getParameter("dateFrom");
     String dateTo = request.getParameter("dateTo");
-    
+    String productFilter = request.getParameter("productFilter");
+    String userFilter = request.getParameter("userFilter");
+
     if ("excel".equals(exportType)) {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=export_report_" +
             new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()) + ".xls");
-        
+
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
                 "root", "Admin"
             );
-            
-            String sql = "SELECT e.export_code, e.export_date, p.product_code, p.product_name, " +
-                        "e.quantity, e.unit_price, e.total_price, u.full_name, e.notes " +
-                        "FROM exports e " +
-                        "JOIN products p ON e.product_id = p.id " +
-                        "JOIN users u ON e.user_id = u.id ";
-            
+
+            StringBuilder sql = new StringBuilder(
+                "SELECT e.export_code, e.export_date, p.product_code, p.product_name, " +
+                "e.quantity, e.unit_price, e.total_price, u.full_name, e.notes " +
+                "FROM exports e " +
+                "JOIN products p ON e.product_id = p.id " +
+                "JOIN users u ON e.user_id = u.id WHERE 1=1 "
+            );
+
             if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                sql += "WHERE DATE(e.export_date) BETWEEN ? AND ? ";
+                sql.append("AND DATE(e.export_date) BETWEEN ? AND ? ");
             }
-            
-            sql += "ORDER BY e.export_date DESC";
-            
-            ps = conn.prepareStatement(sql);
-            
+            if (productFilter != null && !productFilter.isEmpty()) {
+                sql.append("AND e.product_id = ? ");
+            }
+            if (userFilter != null && !userFilter.isEmpty()) {
+                sql.append("AND e.user_id = ? ");
+            }
+
+            sql.append("ORDER BY e.export_date DESC");
+
+            ps = conn.prepareStatement(sql.toString());
+
+            int paramIndex = 1;
             if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                ps.setString(1, dateFrom);
-                ps.setString(2, dateTo);
+                ps.setString(paramIndex++, dateFrom);
+                ps.setString(paramIndex++, dateTo);
+            }
+            if (productFilter != null && !productFilter.isEmpty()) {
+                ps.setInt(paramIndex++, Integer.parseInt(productFilter));
+            }
+            if (userFilter != null && !userFilter.isEmpty()) {
+                ps.setInt(paramIndex++, Integer.parseInt(userFilter));
             }
             
             rs = ps.executeQuery();
