@@ -2,7 +2,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
 <%
-// Check authentication
+
 if (session.getAttribute("userId") == null) {
     response.sendRedirect("../index.jsp");
     return;
@@ -34,13 +34,13 @@ try {
         "root", "Admin"
     );
 
-    conn.setAutoCommit(false); // Start transaction
+    conn.setAutoCommit(false); 
 
-    // Handle item removal
+
     if (removeItem != null && !removeItem.trim().isEmpty()) {
         int itemId = Integer.parseInt(removeItem);
 
-        // Get current quantity and product_id before deletion
+
         ps = conn.prepareStatement("SELECT product_id, quantity FROM exports WHERE id = ?");
         ps.setInt(1, itemId);
         rs = ps.executeQuery();
@@ -49,14 +49,14 @@ try {
             int productId = rs.getInt("product_id");
             int currentQuantity = rs.getInt("quantity");
 
-            // Return stock to products
+
             ps.close();
             ps = conn.prepareStatement("UPDATE products SET stock = stock + ? WHERE id = ?");
             ps.setInt(1, currentQuantity);
             ps.setInt(2, productId);
             ps.executeUpdate();
 
-            // Delete the item
+  
             ps.close();
             ps = conn.prepareStatement("DELETE FROM exports WHERE id = ?");
             ps.setInt(1, itemId);
@@ -66,17 +66,17 @@ try {
         ps.close();
 
     } else {
-        // Handle quantity updates
+        
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             String paramName = paramNames.nextElement();
 
             if (paramName.startsWith("quantity_")) {
-                String itemIdStr = paramName.substring(9); // Remove "quantity_" prefix
+                String itemIdStr = paramName.substring(9); 
                 int itemId = Integer.parseInt(itemIdStr);
                 int newQuantity = Integer.parseInt(request.getParameter(paramName));
 
-                // Get current quantity and unit_price
+             
                 ps = conn.prepareStatement("SELECT product_id, quantity, unit_price FROM exports WHERE id = ?");
                 ps.setInt(1, itemId);
                 rs = ps.executeQuery();
@@ -89,7 +89,7 @@ try {
                     int quantityDiff = currentQuantity - newQuantity;
 
                     if (newQuantity == 0) {
-                        // Remove item if quantity is 0
+                      
                         ps.close();
                         ps = conn.prepareStatement("UPDATE products SET stock = stock + ? WHERE id = ?");
                         ps.setInt(1, currentQuantity);
@@ -102,7 +102,7 @@ try {
                         ps.executeUpdate();
 
                     } else {
-                        // Update quantity and total price
+                  
                         double newTotalPrice = newQuantity * unitPrice;
 
                         ps.close();
@@ -112,7 +112,7 @@ try {
                         ps.setInt(3, itemId);
                         ps.executeUpdate();
 
-                        // Adjust stock
+               
                         ps.close();
                         ps = conn.prepareStatement("UPDATE products SET stock = stock + ? WHERE id = ?");
                         ps.setInt(1, quantityDiff);
@@ -126,7 +126,7 @@ try {
         }
     }
 
-    // Update notes for all items in the order
+
     if (notes != null) {
         ps = conn.prepareStatement("UPDATE exports SET notes = ? WHERE export_code = ?");
         ps.setString(1, notes.trim());
@@ -135,15 +135,15 @@ try {
         ps.close();
     }
 
-    conn.commit(); // Commit transaction
+    conn.commit(); 
 
-    // Redirect back to edit page with success message
+
     response.sendRedirect("edit-order.jsp?export_code=" + exportCode + "&success=1");
 
 } catch (Exception e) {
     if (conn != null) {
         try {
-            conn.rollback(); // Rollback on error
+            conn.rollback(); 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
