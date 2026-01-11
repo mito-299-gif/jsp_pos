@@ -4,16 +4,16 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%
-// Check authentication
+
 if (session.getAttribute("userId") == null) {
-    response.sendRedirect("../login.jsp");
+    response.sendRedirect("../index.jsp");
     return;
 }
 
-DecimalFormat df = new DecimalFormat("#,##0.00");
+DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-// Get orders with recipient info
+
 List<Map<String, Object>> orders = new ArrayList<>();
 Connection conn = null;
 PreparedStatement ps = null;
@@ -26,7 +26,7 @@ try {
         "root", "Admin"
     );
 
-    // Get distinct export codes with order info
+  
     String sql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
                  "u.full_name as user_name, " +
                  "SUM(e.total_price) as total_amount, " +
@@ -102,7 +102,7 @@ try {
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar navbar-dark navbar-custom mb-4">
         <div class="container-fluid">
             <span class="navbar-brand">
@@ -189,7 +189,7 @@ try {
         </div>
     </div>
 
-    <!-- Order Details Modal -->
+
     <div class="modal fade" id="orderDetailsModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -200,7 +200,7 @@ try {
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="orderDetailsContent">
-                    <!-- Content will be loaded here -->
+            
                 </div>
             </div>
         </div>
@@ -209,7 +209,7 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function viewOrderDetails(exportCode) {
-            // Load order details via AJAX
+          
             fetch('order-details-fixed.jsp?export_code=' + encodeURIComponent(exportCode))
                 .then(response => response.text())
                 .then(html => {
@@ -226,7 +226,7 @@ try {
             console.log('Print function called');
 
             try {
-                // Simple approach: just use window.print() on current content
+           
                 const orderDetails = document.querySelector('.order-details');
                 if (!orderDetails) {
                     console.error('Order details not found');
@@ -234,20 +234,20 @@ try {
                     return;
                 }
 
-                // Create a print-friendly version
+          
                 const originalContent = document.body.innerHTML;
 
-                // Create print header
+         
                 const printHeader = '<div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">' +
                     '<h2 style="margin: 0; color: #333;">ໃບສັ່ງຊື້ສິນຄ້າ</h2>' +
                     '<p style="margin: 5px 0;">Export Order Receipt</p>' +
                     '</div>';
 
-                // Get the order content and make it print-friendly
+            
                 const orderContent = orderDetails.outerHTML.replace(/max-height: 70vh/g, 'max-height: none')
                                                            .replace(/overflow-y: auto/g, 'overflow: visible');
 
-                // Replace body content for printing
+        
                 document.body.innerHTML = '<div style="font-family: Arial, sans-serif; margin: 20px;">' +
                     printHeader +
                     '<div style="margin-top: 20px;">' + orderContent + '</div>' +
@@ -256,13 +256,13 @@ try {
                     '</div>' +
                     '</div>';
 
-                // Hide the print button
+        
                 const printBtn = document.querySelector('.text-center button');
                 if (printBtn) {
                     printBtn.style.display = 'none';
                 }
 
-                // Add print styles
+                
                 const style = document.createElement('style');
                 style.textContent = `
                     @media print {
@@ -274,10 +274,10 @@ try {
                 `;
                 document.head.appendChild(style);
 
-                // Print
+            
                 window.print();
 
-                // Restore original content after printing
+           
                 setTimeout(function() {
                     document.body.innerHTML = originalContent;
                 }, 1000);
@@ -288,7 +288,7 @@ try {
             }
         }
 
-        // Search functionality
+       
         document.getElementById('searchOrder').addEventListener('input', function(e) {
             const search = e.target.value.toLowerCase();
             document.querySelectorAll('.order-card').forEach(card => {

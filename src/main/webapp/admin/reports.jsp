@@ -4,9 +4,9 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%
-// Check authentication
+
 if (session.getAttribute("userId") == null || !"ADMIN".equals(session.getAttribute("role"))) {
-    response.sendRedirect("../login.jsp");
+    response.sendRedirect("../index.jsp");
     return;
 }
 
@@ -53,22 +53,22 @@ if (exportType != null) {
             
             rs = ps.executeQuery();
             
-            // Excel Header
+    
             out.println("<html><head><meta charset='UTF-8'></head><body>");
             out.println("<table border='1'>");
             out.println("<tr style='background-color: #4CAF50; color: white;'>");
-            out.println("<th>รหัสส่งออก</th>");
-            out.println("<th>วันที่</th>");
-            out.println("<th>รหัสสินค้า</th>");
-            out.println("<th>ชื่อสินค้า</th>");
-            out.println("<th>จำนวน</th>");
-            out.println("<th>ราคา/หน่วย</th>");
-            out.println("<th>ราคารวม</th>");
-            out.println("<th>พนักงาน</th>");
-            out.println("<th>หมายเหตุ</th>");
+            out.println("<th>ລະຫັດສົງອອກ</th>");
+            out.println("<th>ວັນທີ</th>");
+            out.println("<th>ລະຫັດສິນຄ້າ</th>");
+            out.println("<th>ຊື່ສິນຄ້າ</th>");
+            out.println("<th>ຈຳນວນ</th>");
+            out.println("<th>ລາຄາ/ໜ່ວຍ</th>");
+            out.println("<th>ລາຄາລວມ</th>");
+            out.println("<th>ພະນັກງານ</th>");
+            out.println("<th>ຫມາຍເຫດ</th>");
             out.println("</tr>");
             
-            DecimalFormat df = new DecimalFormat("#,##0.00");
+            DecimalFormat df = new DecimalFormat("#,##0");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             double grandTotal = 0;
             
@@ -90,7 +90,7 @@ if (exportType != null) {
             }
             
             out.println("<tr style='background-color: #f0f0f0; font-weight: bold;'>");
-            out.println("<td colspan='6'>รวมทั้งหมด</td>");
+            out.println("<td colspan='6'>ລວມທັງໝົດ</td>");
             out.println("<td>" + df.format(grandTotal) + "</td>");
             out.println("<td colspan='2'></td>");
             out.println("</tr>");
@@ -110,10 +110,10 @@ if (exportType != null) {
     }
 }
 
-DecimalFormat df = new DecimalFormat("#,##0.00");
+DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-// Get filter parameters
+
 String dateFrom = request.getParameter("dateFrom");
 String dateTo = request.getParameter("dateTo");
 String productFilter = request.getParameter("productFilter");
@@ -155,7 +155,7 @@ String userFilter = request.getParameter("userFilter");
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
+   
             <div class="col-md-2 sidebar p-0 no-print">
                 <div class="p-4 text-center border-bottom border-white border-opacity-25">
                     <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
@@ -164,16 +164,16 @@ String userFilter = request.getParameter("userFilter");
                 </div>
                 <nav class="mt-3">
                     <a href="dashboard.jsp">
-                        <i class="bi bi-speedometer2"></i> Dashboard
+                        <i class="bi bi-speedometer2"></i> ໜ້າຫຼັກ
                     </a>
                     <a href="products.jsp">
-                        <i class="bi bi-box"></i> จัดการสินค้า
+                        <i class="bi bi-box"></i> ຈັດການສິນຄ້າ
                     </a>
                     <a href="users.jsp">
-                        <i class="bi bi-people"></i> จัดการพนักงาน
+                        <i class="bi bi-people"></i> ຈັດການພະນັກງານ
                     </a>
                     <a href="reports.jsp" class="active">
-                        <i class="bi bi-file-earmark-text"></i> รายงาน
+                        <i class="bi bi-file-earmark-text"></i> ລາຍງານ
                     </a>
                     <hr class="border-white border-opacity-25">
                     <a href="../logout.jsp" class="text-warning">
@@ -182,13 +182,13 @@ String userFilter = request.getParameter("userFilter");
                 </nav>
             </div>
             
-            <!-- Main Content -->
+
             <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="bi bi-file-earmark-text"></i> รายงานการส่งออก</h2>
+                    <h2><i class="bi bi-file-earmark-text"></i> ລາຍງານການສົ່ງອອກ</h2>
                     <div class="no-print">
                         <button class="btn btn-success" onclick="exportExcel()">
-                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                            <i class="bi bi-file-earmark-excel"></i> ສົ່ງອອກ Excel
                         </button>
                         <button class="btn btn-info" onclick="window.print()">
                             <i class="bi bi-printer"></i> Print
@@ -196,24 +196,24 @@ String userFilter = request.getParameter("userFilter");
                     </div>
                 </div>
                 
-                <!-- Filter Form -->
+             
                 <div class="card shadow-sm mb-4 no-print">
                     <div class="card-body">
                         <form method="GET" class="row g-3">
                             <div class="col-md-3">
-                                <label class="form-label">วันที่เริ่มต้น</label>
+                                <label class="form-label">ວັນທີເລີ່ມຕົ້ນ</label>
                                 <input type="date" class="form-control" name="dateFrom" 
                                        value="<%= dateFrom != null ? dateFrom : "" %>">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">วันที่สิ้นสุด</label>
+                                <label class="form-label">ວັນທີສິ້ນສຸດ</label>
                                 <input type="date" class="form-control" name="dateTo" 
                                        value="<%= dateTo != null ? dateTo : "" %>">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">สินค้า</label>
+                                <label class="form-label">ສິນຄ້າ</label>
                                 <select class="form-select" name="productFilter">
-                                    <option value="">ทั้งหมด</option>
+                                    <option value="">ທັງໝົດ</option>
                                     <%
                                     Connection conn = null;
                                     PreparedStatement ps = null;
@@ -246,9 +246,9 @@ String userFilter = request.getParameter("userFilter");
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">พนักงาน</label>
+                                <label class="form-label">ພະນັກງານ</label>
                                 <select class="form-select" name="userFilter">
-                                    <option value="">ทั้งหมด</option>
+                                    <option value="">ທັງໝົດ</option>
                                     <%
                                     try {
                                         conn = DriverManager.getConnection(
@@ -277,17 +277,17 @@ String userFilter = request.getParameter("userFilter");
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search"></i> ค้นหา
+                                    <i class="bi bi-search"></i> ຄ້ນຫາ   
                                 </button>
                                 <a href="reports.jsp" class="btn btn-secondary">
-                                    <i class="bi bi-x-circle"></i> ล้างค่า
+                                    <i class="bi bi-x-circle"></i> ຍົກເລີກ
                                 </a>
                             </div>
                         </form>
                     </div>
                 </div>
                 
-                <!-- Summary Statistics -->
+          
                 <div class="row g-3 mb-4">
                     <%
                     double totalRevenue = 0;
@@ -349,47 +349,47 @@ String userFilter = request.getParameter("userFilter");
                     <div class="col-md-4">
                         <div class="card stat-card border-primary">
                             <div class="card-body">
-                                <h6 class="text-muted">ยอดส่งออก</h6>
-                                <h3><%= totalExports %> รายการ</h3>
+                                <h6 class="text-muted">ລວມທັງໝົດ</h6>
+                                <h3><%= totalExports %>ລາຍການ</h3>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card stat-card border-info">
                             <div class="card-body">
-                                <h6 class="text-muted">จำนวนสินค้า</h6>
-                                <h3><%= totalQuantity %> ชิ้น</h3>
+                                <h6 class="text-muted">ຈຳນວນສິນຄ້າ</h6>
+                                <h3><%= totalQuantity %> ຊິ້ນ</h3>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card stat-card border-success">
                             <div class="card-body">
-                                <h6 class="text-muted">รายได้รวม</h6>
-                                <h3 class="text-success">฿<%= df.format(totalRevenue) %></h3>
+                                <h6 class="text-muted">ລາຍໄດ້ລວມ</h6>
+                                <h3 class="text-success"><%= df.format(totalRevenue) %> ກີບ</h3>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Report Table -->
+            
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">รายละเอียดการส่งออก</h5>
+                        <h5 class="mb-0">ລາຍລະອຽດການສົ່ງອອກ</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>รหัสส่งออก</th>
-                                        <th>วันที่</th>
-                                        <th>สินค้า</th>
-                                        <th>จำนวน</th>
-                                        <th>ราคา/หน่วย</th>
-                                        <th>ราคารวม</th>
-                                        <th>พนักงาน</th>
-                                        <th class="no-print">หมายเหตุ</th>
+                                        <th>ລະຫັດສົ່ງອອກ</th>
+                                        <th>ວັນທີ</th>
+                                        <th>ສິນຄ້າ</th>
+                                        <th>ຈຳນວນ</th>
+                                        <th>ລາຄາ/ຫນ່ວຍ</th>
+                                        <th>ລາຄາລວມ</th>
+                                        <th>ພະນັກງານ</th>
+                                        <th class="no-print">ຫມາຍເລະດຽວ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -439,7 +439,7 @@ String userFilter = request.getParameter("userFilter");
                                         if (!rs.isBeforeFirst()) {
                                     %>
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted">ไม่พบข้อมูล</td>
+                                        <td colspan="8" class="text-center text-muted">ບໍ່ພົບຂໍໍໍາລັບ</td>
                                     </tr>
                                     <%
                                         } else {
@@ -450,8 +450,8 @@ String userFilter = request.getParameter("userFilter");
                                         <td><%= sdf.format(rs.getTimestamp("export_date")) %></td>
                                         <td><%= rs.getString("product_name") %></td>
                                         <td class="text-center"><%= rs.getInt("quantity") %></td>
-                                        <td class="text-end">฿<%= df.format(rs.getDouble("unit_price")) %></td>
-                                        <td class="text-end text-success fw-bold">฿<%= df.format(rs.getDouble("total_price")) %></td>
+                                        <td class="text-end"><%= df.format(rs.getDouble("unit_price")) %> ກີບ</td>
+                                        <td class="text-end text-success fw-bold"><%= df.format(rs.getDouble("total_price")) %> ກີບ</td>
                                         <td><%= rs.getString("full_name") %></td>
                                         <td class="no-print"><%= rs.getString("notes") != null ? rs.getString("notes") : "-" %></td>
                                     </tr>
@@ -469,10 +469,10 @@ String userFilter = request.getParameter("userFilter");
                                 </tbody>
                                 <tfoot class="table-light">
                                     <tr class="fw-bold">
-                                        <td colspan="3" class="text-end">รวมทั้งหมด:</td>
+                                        <td colspan="3" class="text-end">ລວມທັງໝົດ:</td>
                                         <td class="text-center"><%= totalQuantity %></td>
                                         <td></td>
-                                        <td class="text-end text-success">฿<%= df.format(totalRevenue) %></td>
+                                        <td class="text-end text-success"><%= df.format(totalRevenue) %> ກີບ</td>
                                         <td colspan="2"></td>
                                     </tr>
                                 </tfoot>

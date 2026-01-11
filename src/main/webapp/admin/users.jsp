@@ -3,7 +3,7 @@
 <%
 // Check authentication
 if (session.getAttribute("userId") == null || !"ADMIN".equals(session.getAttribute("role"))) {
-    response.sendRedirect("../login.jsp");
+    response.sendRedirect("../index.jsp");
     return;
 }
 
@@ -36,7 +36,7 @@ if ("POST".equals(request.getMethod())) {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                message = "Username นี้มีอยู่ในระบบแล้ว";
+                message = "Username ມີແລ້ວ";
                 messageType = "danger";
             } else {
                 rs.close();
@@ -52,7 +52,7 @@ if ("POST".equals(request.getMethod())) {
                 ps.setString(4, role);
                 ps.executeUpdate();
 
-                message = "เพิ่มพนักงานสำเร็จ";
+                message = "ພະນັກງານໃໝ່ຖືກເພີ່ມແລ້ວ";
                 messageType = "success";
             }
             
@@ -80,12 +80,12 @@ if ("POST".equals(request.getMethod())) {
             }
             
             ps.executeUpdate();
-            message = "แก้ไขข้อมูลพนักงานสำเร็จ";
+            message = "ການແກ້ໄຂຂໍໍໍາລັບສຳເລັດ";
             messageType = "success";
         }
         
     } catch (Exception e) {
-        message = "เกิดข้อผิดพลาด: " + e.getMessage();
+        message = "error: " + e.getMessage();
         messageType = "danger";
         e.printStackTrace();
     } finally {
@@ -111,11 +111,11 @@ if (deleteId != null) {
         ps.setInt(1, Integer.parseInt(deleteId));
         ps.executeUpdate();
         
-        message = "ปิดการใช้งานพนักงานสำเร็จ";
+        message = "drop ການໃຊ້ງານພະນັກງານສຳເລັດ";
         messageType = "success";
         
     } catch (Exception e) {
-        message = "เกิดข้อผิดพลาด: " + e.getMessage();
+        message = "error: " + e.getMessage();
         messageType = "danger";
     } finally {
         if (ps != null) try { ps.close(); } catch (SQLException e) {}
@@ -123,28 +123,28 @@ if (deleteId != null) {
     }
 }
 
-// Handle Activate
+
 String activateId = request.getParameter("activate");
 if (activateId != null) {
     Connection conn = null;
     PreparedStatement ps = null;
     
     try {
-                                        Class.forName("com.mysql.cj.jdbc.Driver");
-                                        conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-                                            "root", "Admin"
-                                        );
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
+        "root", "Admin"
+        );
         
         ps = conn.prepareStatement("UPDATE users SET status='ACTIVE' WHERE id=?");
         ps.setInt(1, Integer.parseInt(activateId));
         ps.executeUpdate();
         
-        message = "เปิดการใช้งานพนักงานสำเร็จ";
+        message = "open ການໃຊ້ງານພະນັກງານສຳເລັດ";
         messageType = "success";
         
     } catch (Exception e) {
-        message = "เกิดข้อผิดพลาด: " + e.getMessage();
+        message = "error: " + e.getMessage();
         messageType = "danger";
     } finally {
         if (ps != null) try { ps.close(); } catch (SQLException e) {}
@@ -182,7 +182,7 @@ if (activateId != null) {
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
+   
             <div class="col-md-2 sidebar p-0">
                 <div class="p-4 text-center border-bottom border-white border-opacity-25">
                     <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
@@ -191,7 +191,7 @@ if (activateId != null) {
                 </div>
                 <nav class="mt-3">
                     <a href="dashboard.jsp">
-                        <i class="bi bi-speedometer2"></i> ແດຊບອດ
+                        <i class="bi bi-speedometer2"></i> ໜ້າຫຼັກ
                     </a>
                     <a href="products.jsp">
                         <i class="bi bi-box"></i> ຈັດການສິນຄ້າ
@@ -209,13 +209,13 @@ if (activateId != null) {
                 </nav>
             </div>
             
-            <!-- Main Content -->
+        
             <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="bi bi-people"></i> จัดการพนักงาน</h2>
+                    <h2><i class="bi bi-people"></i> ຈັດການພະນັກງານ</h2>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal" 
                             onclick="resetForm()">
-                        <i class="bi bi-plus-circle"></i> เพิ่มพนักงานใหม่
+                        <i class="bi bi-plus-circle"></i> ເພີ່ມພະນັກງານໃໝ່
                     </button>
                 </div>
                 
@@ -226,7 +226,7 @@ if (activateId != null) {
                 </div>
                 <% } %>
                 
-                <!-- Users Table -->
+              
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="table-responsive">
@@ -234,12 +234,12 @@ if (activateId != null) {
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Username</th>
-                                        <th>ชื่อ-นามสกุล</th>
-                                        <th>สิทธิ์</th>
-                                        <th>สถานะ</th>
-                                        <th>วันที่สร้าง</th>
-                                        <th>จัดการ</th>
+                                        <th>ຊື່</th>
+                                        <th>ນາມສະກຸນ</th>
+                                        <th>ສິດທິ</th>
+                                        <th>ສະຖານະ</th>
+                                        <th>ວັນທີສ້າງ</th>
+                                        <th>ຈັດການ   </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -294,13 +294,13 @@ if (activateId != null) {
                                             <% if (isActive) { %>
                                                 <a href="?delete=<%= rs.getInt("id") %>" 
                                                    class="btn btn-sm btn-danger"
-                                                   onclick="return confirm('ยืนยันการปิดการใช้งานพนักงานนี้?')">
+                                                   onclick="return confirm('ຢືນຢັນການລົບພະນັກງານນີ້?')">
                                                     <i class="bi bi-x-circle"></i>
                                                 </a>
                                             <% } else { %>
                                                 <a href="?activate=<%= rs.getInt("id") %>" 
                                                    class="btn btn-sm btn-success"
-                                                   onclick="return confirm('ยืนยันการเปิดการใช้งานพนักงานนี้?')">
+                                                   onclick="return confirm('ຢືນຢັນການເປີດການໃຊ້ງານພະນັກງານນີ້?')">
                                                     <i class="bi bi-check-circle"></i>
                                                 </a>
                                             <% } %>
@@ -325,13 +325,13 @@ if (activateId != null) {
         </div>
     </div>
     
-    <!-- User Modal -->
+   
     <div class="modal fade" id="userModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="modalTitle">
-                        <i class="bi bi-plus-circle"></i> เพิ่มพนักงานใหม่
+                        <i class="bi bi-plus-circle"></i> ເພີ່ມພະນັກງານໃໝ່
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -341,7 +341,7 @@ if (activateId != null) {
                         <input type="hidden" name="userId" id="userId">
                         
                         <div class="mb-3">
-                            <label class="form-label">Username *</label>
+                            <label class="form-label">ຊື່</label>
                             <input type="text" class="form-control" name="username" 
                                    id="username" required>
                         </div>
@@ -351,18 +351,18 @@ if (activateId != null) {
                             <input type="password" class="form-control" name="password" 
                                    id="password">
                             <small class="text-muted" id="passwordHint">
-                                สำหรับแก้ไข: เว้นว่างไว้หากไม่ต้องการเปลี่ยนรหัสผ่าน
+                               ສຳລັບການແກ້ໄຂ, ປ່ອນລະຫັດໃໝ່ເພື່ອປ່ຽນລະຫັດ. ປ່ອນເປັນຊ່ອງເປົ່າເພື່ອນາມານ.
                             </small>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">ชื่อ-นามสกุล *</label>
+                            <label class="form-label">ນາມສະກຸນ</label>
                             <input type="text" class="form-control" name="fullName" 
                                    id="fullName" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">สิทธิ์ *</label>
+                            <label class="form-label">ສິດທິ</label>
                             <select class="form-select" name="role" id="role" required>
                                 <option value="STAFF">Staff</option>
                                 <option value="ADMIN">Admin</option>
@@ -371,10 +371,10 @@ if (activateId != null) {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            ยกเลิก
+                            ຍົກເລີກ
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> บันทึก
+                            <i class="bi bi-save"></i> ບັນທຶກ
                         </button>
                     </div>
                 </form>
@@ -391,7 +391,7 @@ if (activateId != null) {
             document.getElementById('password').required = true;
             document.getElementById('passwordLabel').textContent = '*';
             document.getElementById('passwordHint').style.display = 'none';
-            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-plus-circle"></i> เพิ่มพนักงานใหม่';
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-plus-circle"></i> ເພີ່ມພະນັກງານໃໝ່';
         }
 
         function editUser(id, username, fullName, role) {
@@ -404,7 +404,7 @@ if (activateId != null) {
             document.getElementById('password').required = false;
             document.getElementById('passwordLabel').textContent = '';
             document.getElementById('passwordHint').style.display = 'block';
-            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil"></i> แก้ไขข้อมูลพนักงาน';
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil"></i> ແກ້ໄຂຂໍ້ມູນພະນັກງານ';
 
             var modal = new bootstrap.Modal(document.getElementById('userModal'));
             modal.show();

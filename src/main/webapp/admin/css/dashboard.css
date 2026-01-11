@@ -1,0 +1,27 @@
+body {
+  font-family: "Phetsarath OT";
+}
+.sidebar {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.sidebar a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 12px 20px;
+  display: block;
+  transition: all 0.3s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+.stat-card {
+  border-left: 4px solid;
+  transition: transform 0.3s;
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+}

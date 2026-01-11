@@ -10,7 +10,7 @@ if (exportCode == null || exportCode.trim().isEmpty()) {
     return;
 }
 
-DecimalFormat df = new DecimalFormat("#,##0.00");
+DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 Connection conn = null;
@@ -85,32 +85,32 @@ try {
     <!-- Order Header -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <h6><strong>เลขที่สั่งซื้อ:</strong> <%= orderHeader.get("export_code") %></h6>
-            <p><strong>วันที่:</strong> <%= dateFormat.format(orderHeader.get("export_date")) %></p>
-            <p><strong>ผู้บันทึก:</strong> <%= orderHeader.get("user_name") %></p>
+            <h6><strong>ເລກທີ່ສັ່ງຊື້:</strong> <%= orderHeader.get("export_code") %></h6>
+            <p><strong>ວັນທີ:</strong> <%= dateFormat.format(orderHeader.get("export_date")) %></p>
+            <p><strong>ຜູ້ບັນທຶກ:</strong> <%= orderHeader.get("user_name") %></p>
         </div>
         <div class="col-md-6 text-end">
-            <h5 class="text-success">รวมทั้งหมด: ฿<%= df.format(orderHeader.get("total_amount")) %></h5>
-            <p class="mb-0"><%= orderHeader.get("item_count") %> รายการ</p>
+            <h5 class="text-success">ລວມທັງໝົດ: <%= df.format(orderHeader.get("total_amount")) %> ກີບ</h5>
+            <p class="mb-0"><%= orderHeader.get("item_count") %> ລາຍການ</p>
         </div>
     </div>
 
     <% if (orderHeader.get("notes") != null && !orderHeader.get("notes").toString().trim().isEmpty()) { %>
     <div class="mb-4">
-        <strong>หมายเหตุ:</strong> <%= orderHeader.get("notes") %>
+        <strong>ແບບບັນທຶກ:</strong> <%= orderHeader.get("notes") %>
     </div>
     <% } %>
 
-    <!-- Order Items -->
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>รหัสสินค้า</th>
-                    <th>ชื่อสินค้า</th>
-                    <th class="text-center">จำนวน</th>
-                    <th class="text-end">ราคาต่อหน่วย</th>
-                    <th class="text-end">รวม</th>
+                    <th>ລະຫັດສິນຄ້າ</th>
+                    <th>ຊື່ສິນຄ້າ</th>
+                    <th class="text-center">ຈຳນວນ</th>
+                    <th class="text-end">ລາຄາຕໍ່ຫນ່ວຍ</th>
+                    <th class="text-end">ລວມ</th>
                 </tr>
             </thead>
             <tbody>
@@ -119,15 +119,15 @@ try {
                     <td><%= item.get("product_code") %></td>
                     <td><%= item.get("product_name") %></td>
                     <td class="text-center"><%= item.get("quantity") %></td>
-                    <td class="text-end">฿<%= df.format(item.get("unit_price")) %></td>
-                    <td class="text-end">฿<%= df.format(item.get("total_price")) %></td>
+                    <td class="text-end"><%= df.format(item.get("unit_price")) %> ກີບ</td>
+                    <td class="text-end"><%= df.format(item.get("total_price")) %> ກີບ</td>
                 </tr>
                 <% } %>
             </tbody>
             <tfoot>
                 <tr class="table-dark">
-                    <th colspan="4" class="text-end">รวมทั้งหมด:</th>
-                    <th class="text-end">฿<%= df.format(orderHeader.get("total_amount")) %></th>
+                    <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
+                    <th class="text-end"><%= df.format(orderHeader.get("total_amount")) %> ກີບ</th>
                 </tr>
             </tfoot>
         </table>
@@ -136,7 +136,7 @@ try {
     <!-- Print Button -->
     <div class="text-center mt-4">
         <button class="btn btn-primary" onclick="printOrder()">
-            <i class="bi bi-printer"></i> พิมพ์ใบสั่งซื้อ
+            <i class="bi bi-printer"></i> ພິມໃບສັ່ງຊື້
         </button>
     </div>
 </div>
@@ -157,7 +157,7 @@ function printOrder() {
         const orderDetails = document.querySelector('.order-details');
         if (!orderDetails) {
             console.error('Order details not found');
-            alert('ไม่พบข้อมูลสำหรับพิมพ์');
+            alert('ບໍ່ພົບລາຍລະອຽດຄໍາສັ່ງຊື້');
             return;
         }
 
@@ -166,8 +166,8 @@ function printOrder() {
 
         // Create print header
         const printHeader = '<div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">' +
-            '<h2 style="margin: 0; color: #333;">ใบสั่งซื้อสินค้า</h2>' +
-            '<p style="margin: 5px 0;">Export Order Receipt</p>' +
+            '<h2 style="margin: 0; color: #333;">ໃບບິນ</h2>' +
+            '<p style="margin: 5px 0;">ບິນສັ່ງຊື້</p>' +
             '</div>';
 
         // Get the order content and make it print-friendly
@@ -211,7 +211,7 @@ function printOrder() {
 
     } catch (error) {
         console.error('Print error:', error);
-        alert('เกิดข้อผิดพลาดในการพิมพ์: ' + error.message);
+        alert('ການພິມບໍ່ສຳເລັດ: ' + error.message);
     }
 }
 </script>
@@ -219,7 +219,7 @@ function printOrder() {
 <%
 } catch (Exception e) {
     e.printStackTrace();
-    out.println("<div class='alert alert-danger'>เกิดข้อผิดพลาดในการโหลดข้อมูล: " + e.getMessage() + "</div>");
+    out.println("<div class='alert alert-danger'>ການເອົາຂໍໍໍາລັບບໍ່ສຳເລັດ: " + e.getMessage() + "</div>");
 } finally {
     if (rs != null) try { rs.close(); } catch (SQLException e) {}
     if (ps != null) try { ps.close(); } catch (SQLException e) {}

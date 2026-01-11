@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.util.*" %>
 <%@ include file="./class/router_pos.jsp" %>
 <!DOCTYPE html>
 <html lang="th">
@@ -100,6 +103,6 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./js/pos.js"></script>
+    <script src="./script/pos.js"></script>
 </body>
 </html>

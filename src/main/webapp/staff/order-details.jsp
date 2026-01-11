@@ -24,7 +24,7 @@ try {
         "root", "Admin"
     );
 
-    // Get order header info
+
     String headerSql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
                       "u.full_name as user_name, " +
                       "SUM(e.total_price) as total_amount, " +
@@ -56,7 +56,7 @@ try {
         return;
     }
 
-    // Get order items
+
     String itemsSql = "SELECT e.product_id, e.quantity, e.unit_price, e.total_price, " +
                      "p.product_name, p.product_code " +
                      "FROM exports e " +
@@ -85,19 +85,19 @@ try {
     <!-- Order Header -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <h6><strong>เลขที่สั่งซื้อ:</strong> <%= orderHeader.get("export_code") %></h6>
-            <p><strong>วันที่:</strong> <%= dateFormat.format(orderHeader.get("export_date")) %></p>
-            <p><strong>ผู้บันทึก:</strong> <%= orderHeader.get("user_name") %></p>
+            <h6><strong>ເລກທີ່ສັ່ງຊື້:</strong> <%= orderHeader.get("export_code") %></h6>
+            <p><strong>ວັນທີ:</strong> <%= dateFormat.format(orderHeader.get("export_date")) %></p>
+            <p><strong>ຜູ້ບັນທຶກ:</strong> <%= orderHeader.get("user_name") %></p>
         </div>
         <div class="col-md-6 text-end">
-            <h5 class="text-success">รวมทั้งหมด: ฿<%= df.format(orderHeader.get("total_amount")) %></h5>
-            <p class="mb-0"><%= orderHeader.get("item_count") %> รายการ</p>
+            <h5 class="text-success">ລວມທັງໝົດ: ฿<%= df.format(orderHeader.get("total_amount")) %></h5>
+            <p class="mb-0"><%= orderHeader.get("item_count") %> ລາຍການ</p>
         </div>
     </div>
 
     <% if (orderHeader.get("notes") != null && !orderHeader.get("notes").toString().trim().isEmpty()) { %>
     <div class="mb-4">
-        <strong>หมายเหตุ:</strong> <%= orderHeader.get("notes") %>
+        <strong>ແບບບັນທຶກ:</strong> <%= orderHeader.get("notes") %>
     </div>
     <% } %>
 
@@ -106,11 +106,11 @@ try {
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>รหัสสินค้า</th>
-                    <th>ชื่อสินค้า</th>
-                    <th class="text-center">จำนวน</th>
-                    <th class="text-end">ราคาต่อหน่วย</th>
-                    <th class="text-end">รวม</th>
+                    <th>ລະຫັດສິນຄ້າ</th>
+                    <th>ຊື່ສິນຄ້າ</th>
+                    <th class="text-center">ຈຳນວນ</th>
+                    <th class="text-end">ລາຄາຕໍ່ຫນ່ວຍ</th>
+                    <th class="text-end">ລວມ</th>
                 </tr>
             </thead>
             <tbody>
@@ -119,15 +119,15 @@ try {
                     <td><%= item.get("product_code") %></td>
                     <td><%= item.get("product_name") %></td>
                     <td class="text-center"><%= item.get("quantity") %></td>
-                    <td class="text-end">฿<%= df.format(item.get("unit_price")) %></td>
-                    <td class="text-end">฿<%= df.format(item.get("total_price")) %></td>
+                    <td class="text-end"><%= df.format(item.get("unit_price")) %> ກີບ</td>
+                    <td class="text-end"><%= df.format(item.get("total_price")) %> ກີບ</td>
                 </tr>
                 <% } %>
             </tbody>
             <tfoot>
                 <tr class="table-dark">
-                    <th colspan="4" class="text-end">รวมทั้งหมด:</th>
-                    <th class="text-end">฿<%= df.format(orderHeader.get("total_amount")) %></th>
+                    <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
+                    <th class="text-end"><%= df.format(orderHeader.get("total_amount")) %> ກີບ</th>
                 </tr>
             </tfoot>
         </table>
@@ -136,7 +136,7 @@ try {
     <!-- Print Button -->
     <div class="text-center mt-4">
         <button class="btn btn-primary" onclick="printOrder()">
-            <i class="bi bi-printer"></i> พิมพ์ใบสั่งซื้อ
+            <i class="bi bi-printer"></i> ພິມໃບສັ່ງຊື້
         </button>
     </div>
 </div>
@@ -150,13 +150,12 @@ try {
 
 <script>
 function printOrder() {
-    // Create a new window for printing
+
     const printWindow = window.open('', '_blank', 'width=800,height=600');
 
-    // Get the order content
+
     const orderContent = document.querySelector('.order-details').innerHTML;
 
-    // Create the print HTML using string concatenation
     const printHTML = '<!DOCTYPE html>' +
         '<html>' +
         '<head>' +
@@ -266,7 +265,7 @@ function printOrder() {
 <%
 } catch (Exception e) {
     e.printStackTrace();
-    out.println("<div class='alert alert-danger'>เกิดข้อผิดพลาดในการโหลดข้อมูล: " + e.getMessage() + "</div>");
+    out.println("<div class='alert alert-danger'>ກໍ່ລະດັບຂໍໍໍາລັບສຳເລັດ: " + e.getMessage() + "</div>");
 } finally {
     if (rs != null) try { rs.close(); } catch (SQLException e) {}
     if (ps != null) try { ps.close(); } catch (SQLException e) {}
