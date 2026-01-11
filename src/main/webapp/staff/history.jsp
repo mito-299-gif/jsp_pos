@@ -3,9 +3,9 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
-// Check authentication
+
 if (session.getAttribute("userId") == null) {
-    response.sendRedirect("../login.jsp");
+    response.sendRedirect("../index.jsp");
     return;
 }
 
@@ -13,7 +13,7 @@ int userId = (Integer) session.getAttribute("userId");
 DecimalFormat df = new DecimalFormat("#,##0");
 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-// Get filter parameters
+
 String dateFrom = request.getParameter("dateFrom");
 String dateTo = request.getParameter("dateTo");
 String searchCode = request.getParameter("searchCode");
@@ -39,7 +39,7 @@ String searchCode = request.getParameter("searchCode");
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar navbar-dark navbar-custom mb-4">
         <div class="container-fluid">
             <span class="navbar-brand">
@@ -62,7 +62,7 @@ String searchCode = request.getParameter("searchCode");
     </nav>
     
     <div class="container-fluid px-4">
-        <!-- Summary Statistics -->
+     
         <div class="row g-3 mb-4">
             <%
             double totalRevenue = 0;
@@ -209,11 +209,11 @@ String searchCode = request.getParameter("searchCode");
             </div>
         </div>
         
-        <!-- History Table -->
+
         <div class="card shadow-sm">
             <div class="card-header bg-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-list-ul"></i> รายการส่งออกของฉัน
+                    <i class="bi bi-list-ul"></i> ລາຍການສົ່ງອອກ
                 </h5>
             </div>
             <div class="card-body">
@@ -221,13 +221,13 @@ String searchCode = request.getParameter("searchCode");
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>รหัสส่งออก</th>
-                                <th>วันที่</th>
-                                <th>สินค้า</th>
-                                <th>จำนวน</th>
-                                <th>ราคา/หน่วย</th>
-                                <th>ราคารวม</th>
-                                <th>หมายเหตุ</th>
+                                <th>ລະຫັດສົ່ງອອກ</th>
+                                <th>ວັນທີ່</th>
+                                <th>ສິນຄ້າ</th>
+                                <th>ຈຳນວນ</th>
+                                <th>ລາຄາ/ຫນ່ວຍ</th>
+                                <th>ລາຄາລວມ</th>
+                                <th>ຫມາຍເຫດ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -310,7 +310,7 @@ String searchCode = request.getParameter("searchCode");
                             <tr>
                                 <td colspan="7" class="text-center py-5">
                                     <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                                    <p class="text-muted mt-3">ไม่พบข้อมูลการส่งออก</p>
+                                    <p class="text-muted mt-3">ບໍ່ພົບຂໍ້ມູນການສົ່ງອອກ</p>
                                 </td>
                             </tr>
                             <%
@@ -335,7 +335,7 @@ String searchCode = request.getParameter("searchCode");
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0">
-                            <i class="bi bi-bar-chart"></i> สินค้าที่ส่งออกมากที่สุด (Top 5)
+                            <i class="bi bi-bar-chart"></i> ສິນຄ້າທີ່ສົ່ງອອກຫຼາຍທີ່ສຸດ (Top 5)
                         </h5>
                     </div>
                     <div class="card-body">
@@ -343,10 +343,10 @@ String searchCode = request.getParameter("searchCode");
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
-                                        <th>อันดับ</th>
-                                        <th>สินค้า</th>
-                                        <th class="text-end">จำนวน</th>
-                                        <th class="text-end">มูลค่า</th>
+                                        <th>ອັນດັບ</th>
+                                        <th>ສິນຄ້າ</th>
+                                        <th class="text-end">ຈຳນວນ</th>
+                                        <th class="text-end">ມູນຄ່າ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -391,7 +391,7 @@ String searchCode = request.getParameter("searchCode");
                                         if (!hasTopProducts) {
                                     %>
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">ยังไม่มีข้อมูล</td>
+                                        <td colspan="4" class="text-center text-muted">ຍັງບໍ່ມີຂໍ້ມູນ</td>
                                     </tr>
                                     <%
                                         }
@@ -414,7 +414,7 @@ String searchCode = request.getParameter("searchCode");
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
                         <h5 class="mb-0">
-                            <i class="bi bi-calendar3"></i> สรุปรายเดือน
+                            <i class="bi bi-calendar3"></i> ສະຫຼຸບລາຍເດືອນ
                         </h5>
                     </div>
                     <div class="card-body">
@@ -422,9 +422,9 @@ String searchCode = request.getParameter("searchCode");
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
-                                        <th>เดือน/ปี</th>
-                                        <th class="text-end">รายการ</th>
-                                        <th class="text-end">มูลค่า</th>
+                                        <th>ເດືອນ/ປີ</th>
+                                        <th class="text-end">ລາຍການ</th>
+                                        <th class="text-end">ມູນຄ່າ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -465,7 +465,7 @@ String searchCode = request.getParameter("searchCode");
                                         if (!hasMonthlyData) {
                                     %>
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted">ยังไม่มีข้อมูล</td>
+                                        <td colspan="3" class="text-center text-muted">ຍັງບໍ່ມີຂໍ້ມູນ</td>
                                     </tr>
                                     <%
                                         }

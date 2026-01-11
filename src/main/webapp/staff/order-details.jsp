@@ -6,7 +6,7 @@
 <%
 String exportCode = request.getParameter("export_code");
 if (exportCode == null || exportCode.trim().isEmpty()) {
-    out.println("<div class='alert alert-danger'>ไม่พบข้อมูลคำสั่งซื้อ</div>");
+    out.println("<div class='alert alert-danger'>ບໍ່ພົບຂໍ້ມູນສັ່ງຊື້</div>");
     return;
 }
 
@@ -52,7 +52,7 @@ try {
     ps.close();
 
     if (orderHeader == null) {
-        out.println("<div class='alert alert-warning'>ไม่พบข้อมูลคำสั่งซื้อ</div>");
+        out.println("<div class='alert alert-warning'>ບໍ່ພົບຂໍ້ມູນສັ່ງຊື້</div>");
         return;
     }
 
@@ -237,24 +237,24 @@ function printOrder() {
         '</body>' +
         '</html>';
 
-    // Write to the new window
+
     printWindow.document.open();
     printWindow.document.write(printHTML);
     printWindow.document.close();
 
-    // Wait for content to load, then print
+ 
     printWindow.onload = function() {
-        // Remove the print button from the printed content
+
         const printBtn = printWindow.document.querySelector('.text-center button');
         if (printBtn) {
             printBtn.style.display = 'none';
         }
 
-        // Focus and print
+
         printWindow.focus();
         printWindow.print();
 
-        // Close the window after printing (optional)
+   
         setTimeout(function() {
             printWindow.close();
         }, 1000);

@@ -6,7 +6,7 @@
 <%
 String exportCode = request.getParameter("export_code");
 if (exportCode == null || exportCode.trim().isEmpty()) {
-    out.println("<div class='alert alert-danger'>ไม่พบข้อมูลคำสั่งซื้อ</div>");
+    out.println("<div class='alert alert-danger'>ບໍ່ພົບຂໍ້ມູນສັ່ງຊື້</div>");
     return;
 }
 
@@ -24,7 +24,7 @@ try {
         "root", "Admin"
     );
 
-    // Get order header info
+
     String headerSql = "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, " +
                       "u.full_name as user_name, " +
                       "SUM(e.total_price) as total_amount, " +
@@ -52,11 +52,11 @@ try {
     ps.close();
 
     if (orderHeader == null) {
-        out.println("<div class='alert alert-warning'>ไม่พบข้อมูลคำสั่งซื้อ</div>");
+        out.println("<div class='alert alert-warning'>ບໍ່ພົບຂໍ້ມູນສັ່ງຊື້</div>");
         return;
     }
 
-    // Get order items
+   
     String itemsSql = "SELECT e.product_id, e.quantity, e.unit_price, e.total_price, " +
                      "p.product_name, p.product_code " +
                      "FROM exports e " +
@@ -133,7 +133,7 @@ try {
         </table>
     </div>
 
-    <!-- Print Button -->
+
     <div class="text-center mt-4">
         <button class="btn btn-primary" onclick="printOrder()">
             <i class="bi bi-printer"></i> ພິມໃບສັ່ງຊື້
@@ -153,7 +153,7 @@ function printOrder() {
     console.log('Print function called');
 
     try {
-        // Simple approach: just use window.print() on current content
+       
         const orderDetails = document.querySelector('.order-details');
         if (!orderDetails) {
             console.error('Order details not found');
@@ -161,20 +161,18 @@ function printOrder() {
             return;
         }
 
-        // Create a print-friendly version
+       
         const originalContent = document.body.innerHTML;
 
-        // Create print header
         const printHeader = '<div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">' +
             '<h2 style="margin: 0; color: #333;">ໃບບິນ</h2>' +
             '<p style="margin: 5px 0;">ບິນສັ່ງຊື້</p>' +
             '</div>';
 
-        // Get the order content and make it print-friendly
         const orderContent = orderDetails.outerHTML.replace(/max-height: 70vh/g, 'max-height: none')
                                                    .replace(/overflow-y: auto/g, 'overflow: visible');
 
-        // Replace body content for printing
+       
         document.body.innerHTML = '<div style="font-family: Arial, sans-serif; margin: 20px;">' +
             printHeader +
             '<div style="margin-top: 20px;">' + orderContent + '</div>' +
@@ -183,13 +181,13 @@ function printOrder() {
             '</div>' +
             '</div>';
 
-        // Hide the print button
+     
         const printBtn = document.querySelector('.text-center button');
         if (printBtn) {
             printBtn.style.display = 'none';
         }
 
-        // Add print styles
+   
         const style = document.createElement('style');
         style.textContent = `
             @media print {
@@ -201,10 +199,9 @@ function printOrder() {
         `;
         document.head.appendChild(style);
 
-        // Print
+  
         window.print();
 
-        // Restore original content after printing
         setTimeout(function() {
             document.body.innerHTML = originalContent;
         }, 1000);
