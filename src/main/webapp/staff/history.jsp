@@ -153,7 +153,7 @@
                                 <th class="text-center">ຈຳນວນ</th>
                                 <th class="text-center">ລາຄາ/ຫນ່ວຍ</th>
                                 <th class="text-center">ລາຄາລວມ</th>
-                                <th class="text-center">ຫມາຍເຫດ</th>
+                                <th class="text-center">ເບີໂທຜູ້ສັ່ງ</th>
                             </tr>
                         </thead>
                         <tbody>

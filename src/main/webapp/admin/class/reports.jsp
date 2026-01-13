@@ -82,7 +82,7 @@ if (exportType != null) {
             out.println("<th>ລາຄາ/ໜ່ວຍ</th>");
             out.println("<th>ລາຄາລວມ</th>");
             out.println("<th>ພະນັກງານ</th>");
-            out.println("<th>ຫມາຍເຫດ</th>");
+            out.println("<th>ເບີໂທຜູ້ສັ່ງ</th>");
             out.println("</tr>");
             
             DecimalFormat df = new DecimalFormat("#,##0");

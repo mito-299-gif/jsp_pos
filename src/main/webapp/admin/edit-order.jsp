@@ -132,9 +132,9 @@
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="notes" class="form-label">ຫມາຍເຫດ</label>
+                                <label for="notes" class="form-label">ເບີໂທຜູ້ສັ່ງ</label>
                                 <textarea class="form-control" id="notes" name="notes" rows="3"
-                                          placeholder="ເພີ່ມຫມາຍເຫດ..."><%= orderHeader.get("notes") != null ? orderHeader.get("notes") : "" %></textarea>
+                                          placeholder="ເບີໂທຜູ້ສັ່ງ"><%= orderHeader.get("notes") != null ? orderHeader.get("notes") : "" %></textarea>
                             </div>
                         </div>
                         <div class="col-md-6 text-end">
