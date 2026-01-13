@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%
-// Process Login
+
 if ("POST".equals(request.getMethod())) {
     String username = request.getParameter("username");
     String password = request.getParameter("password");
@@ -12,14 +12,14 @@ if ("POST".equals(request.getMethod())) {
         ResultSet rs = null;
 
         try {
-            // Connect to database
+        
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://db:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
+                "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
                 "root", "Admin"
             );
 
-            // Verify credentials
+          
             ps = conn.prepareStatement(
                 "SELECT id, username, full_name, role FROM users WHERE username = ? AND password = ? AND status = 'ACTIVE'"
             );
@@ -28,12 +28,12 @@ if ("POST".equals(request.getMethod())) {
             rs = ps.executeQuery();
             
             if (rs.next()) {
-                // ເຂົ້າສູ່ລະບົບສຳເລັດ
+           
                 session.setAttribute("userId", rs.getInt("id"));
                 session.setAttribute("username", rs.getString("username"));
                 session.setAttribute("fullName", rs.getString("full_name"));
                 session.setAttribute("role", rs.getString("role"));
-                session.setMaxInactiveInterval(3600); // 1 hour
+                session.setMaxInactiveInterval(3600); 
 
                 String role = rs.getString("role");
                 if ("ADMIN".equals(role)) {
@@ -56,7 +56,7 @@ if ("POST".equals(request.getMethod())) {
     }
 }
 
-// If already logged in, redirect
+
 if (session.getAttribute("userId") != null) {
     String role = (String) session.getAttribute("role");
     if ("ADMIN".equals(role)) {
