@@ -34,7 +34,7 @@ try {
         "root", "Admin"
     );
 
-    userPs = userConn.prepareStatement("SELECT id, full_name FROM users WHERE id != ? AND full_name != 'Administrator' ORDER BY full_name");
+    userPs = userConn.prepareStatement("SELECT id, full_name FROM users WHERE id != ? AND full_name != 'admin' ORDER BY full_name");
     userPs.setInt(1, currentUserId);
     userRs = userPs.executeQuery();
 

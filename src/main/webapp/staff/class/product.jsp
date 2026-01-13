@@ -40,7 +40,7 @@
                                     <div class="card-body p-2">
                                         <small class="text-muted"><%= rs.getString("product_code") %></small>
                                         <h6 class="mb-1"><%= rs.getString("product_name") %></h6>
-                                        <small class="text-muted">Category: <%= rs.getString("category") %></small>
+                                        <small style="color: rgb(15, 95, 255);">ປະເພດ: <%= rs.getString("category") %></small>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="text-success fw-bold"><%= df.format(rs.getDouble("sell_price")) %> ກີບ</span>
                                             <span class="badge <%= lowStock ? "bg-danger" : "bg-secondary" %>">

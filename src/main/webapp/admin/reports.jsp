@@ -148,7 +148,7 @@
                                         <th>ລາຄາ/ຫນ່ວຍ</th>
                                         <th>ລາຄາລວມ</th>
                                         <th>ພະນັກງານ</th>
-                                        <th class="no-print">ຫມາຍເລະດຽວ</th>
+                                        <th class="no-print">ເບີໂທຜູ້ສັ່ງ</th>
                                     </tr>
                                 </thead>
                                 <tbody>

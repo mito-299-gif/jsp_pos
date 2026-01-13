@@ -4,7 +4,7 @@ body {
 .sidebar {
   min-height: 100vh;
   background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: rgb(255, 255, 255);
 }
 .sidebar a {
   color: rgba(255, 255, 255, 0.8);

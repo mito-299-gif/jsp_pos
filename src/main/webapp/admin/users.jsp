@@ -69,8 +69,8 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>ຊື່</th>
-                                        <th>ນາມສະກຸນ</th>
+                                        <th>ID User</th>
+                                        <th>ຊື່ ແລະ ນາມສະກຸນ</th>
                                         <th>ສິດທິ</th>
                                         <th>ສະຖານະ</th>
                                         <th>ວັນທີສ້າງ</th>
@@ -105,7 +105,7 @@
                         <input type="hidden" name="userId" id="userId">
                         
                         <div class="mb-3">
-                            <label class="form-label">ຊື່</label>
+                            <label class="form-label">ID User</label>
                             <input type="text" class="form-control" name="username" 
                                    id="username" required>
                         </div>
@@ -120,7 +120,7 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">ນາມສະກຸນ</label>
+                            <label class="form-label">ຊື່ ແລະ ນາມສະກຸນ</label>
                             <input type="text" class="form-control" name="fullName" 
                                    id="fullName" required>
                         </div>

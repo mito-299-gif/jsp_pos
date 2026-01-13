@@ -71,8 +71,8 @@
                                         <th>ໝວດຫມູ່</th>
                                         <th>ລາຄາທຸນ</th>
                                         <th>ລາຄາຂາຍ</th>
-                                        <th>ສຕອກ</th>
-                                        <th>ສຕອກຕໍ່ສູງ</th>
+                                        <th>ສຕອກສຸງ</th>
+                                        <th>ສຕອກຕໍ່ຳສຸດ</th>
                                         <th>ການດຳເນິນການ</th>
                                     </tr>
                                 </thead>
@@ -224,11 +224,11 @@
                                 <input type="number" step="0.01" class="form-control" name="sellPrice" id="editSellPrice" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">ສະຕ໋ອກ</label>
+                                <label class="form-label">ສະຕ໋ອກສຸງສຸດ</label>
                                 <input type="number" class="form-control" name="stock" id="editStock" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">ສະຕ໋ອກຕໍ່ສູງ</label>
+                                <label class="form-label">ສະຕ໋ອກຕໍ່ຳສຸດ</label>
                                 <input type="number" class="form-control" name="minStock" id="editMinStock" required>
                             </div>
                         </div>

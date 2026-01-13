@@ -10,7 +10,7 @@
                                             "root", "Admin"
                                         );
                                         
-                                        ps = conn.prepareStatement("SELECT id, full_name FROM users WHERE status='ACTIVE' ORDER BY full_name");
+                                        ps = conn.prepareStatement("SELECT id, full_name FROM users WHERE status='ACTIVE' AND full_name != 'Admin' ORDER BY full_name");
                                         rs = ps.executeQuery();
                                         
                                         while (rs.next()) {

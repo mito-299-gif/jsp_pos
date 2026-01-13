@@ -46,7 +46,7 @@
         
             <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="bi bi-speedometer2"></i> ແດຊບອດ</h2>
+                    <h2><i class="bi bi-speedometer2"></i> dashboard</h2>
                     <div class="text-end">
                         <small class="text-muted">
                             <i class="bi bi-calendar"></i> <%= new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()) %>

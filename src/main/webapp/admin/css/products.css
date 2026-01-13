@@ -1,11 +1,10 @@
 body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
   font-family: "Phetsarath OT";
 }
 .sidebar {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border-right: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
 }
