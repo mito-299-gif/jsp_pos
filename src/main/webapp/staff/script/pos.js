@@ -151,3 +151,28 @@ document
       }
     });
   });
+
+document
+  .getElementById("searchProduct")
+  .addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.value.trim() !== "") {
+      const allProducts = document.querySelectorAll(".product-item");
+      let firstVisibleProduct = null;
+
+      for (let product of allProducts) {
+        if (product.style.display !== "none") {
+          firstVisibleProduct = product;
+          break;
+        }
+      }
+
+      if (firstVisibleProduct) {
+        const card = firstVisibleProduct.querySelector(".product-card");
+        if (card) {
+          card.click();
+          e.target.value = "";
+          e.target.dispatchEvent(new Event("input"));
+        }
+      }
+    }
+  });
