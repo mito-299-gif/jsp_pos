@@ -33,7 +33,7 @@ function printOrder() {
       .replace(/overflow-y: auto/g, "overflow: visible");
 
     document.body.innerHTML =
-      '<div style="font-family: Arial, sans-serif; margin: 20px;">' +
+      '<div style="font-family: Phetsarath OT; margin: 20px;">' +
       printHeader +
       '<div style="margin-top: 20px;">' +
       orderContent +
