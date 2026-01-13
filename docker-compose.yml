@@ -8,7 +8,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   jsp-pos:
-    image: jack299/jsp
+    image: jack299/myjsp1
     ports:
       - "8080:8080"
     volumes:
