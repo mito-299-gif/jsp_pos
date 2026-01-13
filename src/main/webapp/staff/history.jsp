@@ -147,13 +147,13 @@
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>ລະຫັດສົ່ງອອກ</th>
-                                <th>ວັນທີ່</th>
-                                <th>ສິນຄ້າ</th>
-                                <th>ຈຳນວນ</th>
-                                <th>ລາຄາ/ຫນ່ວຍ</th>
-                                <th>ລາຄາລວມ</th>
-                                <th>ຫມາຍເຫດ</th>
+                                <th class="text-center">ລະຫັດສົ່ງອອກ</th>
+                                <th class="text-center">ວັນທີ່</th>
+                                <th class="text-center">ສິນຄ້າ</th>
+                                <th class="text-center">ຈຳນວນ</th>
+                                <th class="text-center">ລາຄາ/ຫນ່ວຍ</th>
+                                <th class="text-center">ລາຄາລວມ</th>
+                                <th class="text-center">ຫມາຍເຫດ</th>
                             </tr>
                         </thead>
                         <tbody>

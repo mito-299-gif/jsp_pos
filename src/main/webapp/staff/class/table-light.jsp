@@ -44,25 +44,25 @@
                                     hasData = true;
                             %>
                             <tr>
-                                <td>
+                                <td class="text-center">
                                     <span class="badge bg-primary"><%= rs.getString("export_code") %></span>
                                 </td>
-                                <td><%= sdf.format(rs.getTimestamp("export_date")) %></td>
-                                <td>
+                                <td class="text-center"><%= sdf.format(rs.getTimestamp("export_date")) %></td>
+                                <td class="text-center">
                                     <strong><%= rs.getString("product_name") %></strong><br>
                                     <small class="text-muted"><%= rs.getString("product_code") %></small>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge bg-secondary"><%= rs.getInt("quantity") %></span>
                                 </td>
-                                <td class="text-end"><%= df.format(rs.getDouble("unit_price")) %> ກີບ</td>
-                                <td class="text-end text-success fw-bold">
+                                <td class="text-center"><%= df.format(rs.getDouble("unit_price")) %> ກີບ</td>
+                                <td class="text-center text-success fw-bold">
                                     <%= df.format(rs.getDouble("total_price")) %> ກີບ
                                 </td>
-                                <td>
-                                    <% 
+                                <td class="text-center">
+                                    <%
                                     String notes = rs.getString("notes");
-                                    if (notes != null && !notes.isEmpty()) { 
+                                    if (notes != null && !notes.isEmpty()) {
                                     %>
                                         <span class="text-muted"><%= notes %></span>
                                     <% } else { %>
