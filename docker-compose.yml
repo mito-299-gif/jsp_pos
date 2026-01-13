@@ -1,0 +1,9 @@
+services:
+  jsp-pos:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/main/webapp:/usr/local/tomcat/webapps/pp
+    environment:
+      - CATALINA_OPTS=-Xmx512m
