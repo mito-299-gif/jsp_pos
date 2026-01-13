@@ -1,23 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%
-
-if (session.getAttribute("userId") == null) {
-    response.sendRedirect("../index.jsp");
-    return;
-}
-
-int userId = (Integer) session.getAttribute("userId");
-DecimalFormat df = new DecimalFormat("#,##0");
-SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-
-String dateFrom = request.getParameter("dateFrom");
-String dateTo = request.getParameter("dateTo");
-String searchCode = request.getParameter("searchCode");
-%>
+<%@ include file="./class/history.jsp" %>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -26,18 +8,8 @@ String searchCode = request.getParameter("searchCode");
     <title>ປະຫວັດການສົ່ງອອກ - ລະບົບ POS ສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f5f6fa;
-              font-family: "Phetsarath OT";
-        }
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .stat-card {
-            border-left: 4px solid;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/history.css">
+    <link rel="icon" href="../logo/logo.png" type="image/png">
 </head>
 <body>
 
@@ -65,55 +37,8 @@ String searchCode = request.getParameter("searchCode");
     <div class="container-fluid px-4">
      
         <div class="row g-3 mb-4">
-            <%
-            double totalRevenue = 0;
-            int totalExports = 0;
-            int totalQuantity = 0;
-            
-            Connection conn = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-                    "root", "Admin"
-                );
-                
-                StringBuilder sql = new StringBuilder(
-                    "SELECT COUNT(*) as count, SUM(quantity) as qty, SUM(total_price) as revenue " +
-                    "FROM exports WHERE user_id = ? "
-                );
-                
-                if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                    sql.append("AND DATE(export_date) BETWEEN ? AND ? ");
-                }
-                
-                ps = conn.prepareStatement(sql.toString());
-                ps.setInt(1, userId);
-                
-                if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                    ps.setString(2, dateFrom);
-                    ps.setString(3, dateTo);
-                }
-                
-                rs = ps.executeQuery();
-                
-                if (rs.next()) {
-                    totalExports = rs.getInt("count");
-                    totalQuantity = rs.getInt("qty");
-                    totalRevenue = rs.getDouble("revenue");
-                }
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (rs != null) try { rs.close(); } catch (SQLException e) {}
-                if (ps != null) try { ps.close(); } catch (SQLException e) {}
-                if (conn != null) try { conn.close(); } catch (SQLException e) {}
-            }
-            %>
+            <%@ include file="./class/history_row3.jsp" %>
+          
             
             <div class="col-md-4">
                 <div class="card stat-card border-primary shadow-sm">
@@ -164,7 +89,7 @@ String searchCode = request.getParameter("searchCode");
             </div>
         </div>
         
-        <!-- Filter Form -->
+
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <form method="GET" class="row g-3">
@@ -203,7 +128,7 @@ String searchCode = request.getParameter("searchCode");
                             <i class="bi bi-x-circle"></i> ລ້າງຄ່າ
                         </a>
                         <button type="button" class="btn btn-success btn-sm" onclick="window.print()">
-                            <i class="bi bi-printer"></i> ພິມພິ້ນ
+                            <i class="bi bi-printer"></i> print
                         </button>
                     </div>
                 </form>
@@ -232,105 +157,15 @@ String searchCode = request.getParameter("searchCode");
                             </tr>
                         </thead>
                         <tbody>
-                            <%
-                            try {
-                                conn = DriverManager.getConnection(
-                                    "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-                                    "root", "Admin"
-                                );
-                                
-                                StringBuilder sql = new StringBuilder(
-                                    "SELECT e.export_code, e.export_date, p.product_name, p.product_code, " +
-                                    "e.quantity, e.unit_price, e.total_price, e.notes " +
-                                    "FROM exports e " +
-                                    "JOIN products p ON e.product_id = p.id " +
-                                    "WHERE e.user_id = ? "
-                                );
-                                
-                                if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                                    sql.append("AND DATE(e.export_date) BETWEEN ? AND ? ");
-                                }
-                                
-                                if (searchCode != null && !searchCode.isEmpty()) {
-                                    sql.append("AND e.export_code LIKE ? ");
-                                }
-                                
-                                sql.append("ORDER BY e.export_date DESC");
-                                
-                                ps = conn.prepareStatement(sql.toString());
-                                ps.setInt(1, userId);
-                                
-                                int paramIndex = 2;
-                                if (dateFrom != null && dateTo != null && !dateFrom.isEmpty() && !dateTo.isEmpty()) {
-                                    ps.setString(paramIndex++, dateFrom);
-                                    ps.setString(paramIndex++, dateTo);
-                                }
-                                
-                                if (searchCode != null && !searchCode.isEmpty()) {
-                                    ps.setString(paramIndex++, "%" + searchCode + "%");
-                                }
-                                
-                                rs = ps.executeQuery();
-                                
-                                boolean hasData = false;
-                                while (rs.next()) {
-                                    hasData = true;
-                            %>
-                            <tr>
-                                <td>
-                                    <span class="badge bg-primary"><%= rs.getString("export_code") %></span>
-                                </td>
-                                <td><%= sdf.format(rs.getTimestamp("export_date")) %></td>
-                                <td>
-                                    <strong><%= rs.getString("product_name") %></strong><br>
-                                    <small class="text-muted"><%= rs.getString("product_code") %></small>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-secondary"><%= rs.getInt("quantity") %></span>
-                                </td>
-                                <td class="text-end"><%= df.format(rs.getDouble("unit_price")) %> ກີບ</td>
-                                <td class="text-end text-success fw-bold">
-                                    <%= df.format(rs.getDouble("total_price")) %> ກີບ
-                                </td>
-                                <td>
-                                    <% 
-                                    String notes = rs.getString("notes");
-                                    if (notes != null && !notes.isEmpty()) { 
-                                    %>
-                                        <span class="text-muted"><%= notes %></span>
-                                    <% } else { %>
-                                        <span class="text-muted">-</span>
-                                    <% } %>
-                                </td>
-                            </tr>
-                            <%
-                                }
-                                
-                                if (!hasData) {
-                            %>
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                                    <p class="text-muted mt-3">ບໍ່ພົບຂໍ້ມູນການສົ່ງອອກ</p>
-                                </td>
-                            </tr>
-                            <%
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (rs != null) try { rs.close(); } catch (SQLException e) {}
-                                if (ps != null) try { ps.close(); } catch (SQLException e) {}
-                                if (conn != null) try { conn.close(); } catch (SQLException e) {}
-                            }
-                            %>
+                            <%@ include file="./class/table-light.jsp" %>
+
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
         
-        <!-- Top Products Chart -->
+
         <div class="row mt-4">
             <div class="col-md-6">
                 <div class="card shadow-sm">
@@ -351,59 +186,8 @@ String searchCode = request.getParameter("searchCode");
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <%
-                                    try {
-                                        conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-                                            "root", "Admin"
-                                        );
-                                        
-                                        ps = conn.prepareStatement(
-                                            "SELECT p.product_name, SUM(e.quantity) as total_qty, " +
-                                            "SUM(e.total_price) as total_price " +
-                                            "FROM exports e " +
-                                            "JOIN products p ON e.product_id = p.id " +
-                                            "WHERE e.user_id = ? " +
-                                            "GROUP BY p.id, p.product_name " +
-                                            "ORDER BY total_qty DESC LIMIT 5"
-                                        );
-                                        ps.setInt(1, userId);
-                                        rs = ps.executeQuery();
-                                        
-                                        int rank = 1;
-                                        boolean hasTopProducts = false;
-                                        
-                                        while (rs.next()) {
-                                            hasTopProducts = true;
-                                    %>
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-primary">#<%= rank++ %></span>
-                                        </td>
-                                        <td><%= rs.getString("product_name") %></td>
-                                        <td class="text-end"><%= rs.getInt("total_qty") %></td>
-                                        <td class="text-end text-success">
-                                            <%= df.format(rs.getDouble("total_price")) %> ກີບ
-                                        </td>
-                                    </tr>
-                                    <%
-                                        }
-                                        
-                                        if (!hasTopProducts) {
-                                    %>
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted">ຍັງບໍ່ມີຂໍ້ມູນ</td>
-                                    </tr>
-                                    <%
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        if (rs != null) try { rs.close(); } catch (SQLException e) {}
-                                        if (ps != null) try { ps.close(); } catch (SQLException e) {}
-                                        if (conn != null) try { conn.close(); } catch (SQLException e) {}
-                                    }
-                                    %>
+                                    <%@ include file="./class/top.jsp" %>
+
                                 </tbody>
                             </table>
                         </div>
@@ -429,55 +213,8 @@ String searchCode = request.getParameter("searchCode");
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <%
-                                    try {
-                                        conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-                                            "root", "Admin"
-                                        );
-                                        
-                                        ps = conn.prepareStatement(
-                                            "SELECT DATE_FORMAT(export_date, '%m/%Y') as month_year, " +
-                                            "COUNT(*) as count, SUM(total_price) as revenue " +
-                                            "FROM exports " +
-                                            "WHERE user_id = ? " +
-                                            "GROUP BY DATE_FORMAT(export_date, '%Y-%m') " +
-                                            "ORDER BY DATE_FORMAT(export_date, '%Y-%m') DESC " +
-                                            "LIMIT 6"
-                                        );
-                                        ps.setInt(1, userId);
-                                        rs = ps.executeQuery();
-                                        
-                                        boolean hasMonthlyData = false;
-                                        
-                                        while (rs.next()) {
-                                            hasMonthlyData = true;
-                                    %>
-                                    <tr>
-                                        <td><%= rs.getString("month_year") %></td>
-                                        <td class="text-end"><%= rs.getInt("count") %></td>
-                                        <td class="text-end text-success">
-                                            <%= df.format(rs.getDouble("revenue")) %> ກີບ
-                                        </td>
-                                    </tr>
-                                    <%
-                                        }
-                                        
-                                        if (!hasMonthlyData) {
-                                    %>
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted">ຍັງບໍ່ມີຂໍ້ມູນ</td>
-                                    </tr>
-                                    <%
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        if (rs != null) try { rs.close(); } catch (SQLException e) {}
-                                        if (ps != null) try { ps.close(); } catch (SQLException e) {}
-                                        if (conn != null) try { conn.close(); } catch (SQLException e) {}
-                                    }
-                                    %>
+                                  <%@ include file="./class/table-sm.jsp" %>
+
                                 </tbody>
                             </table>
                         </div>

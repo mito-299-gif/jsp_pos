@@ -75,6 +75,7 @@ if (session.getAttribute("userId") != null) {
     <title>ເຂົ້າສູ່ລະບົບ - ລະບົບ POS ສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" href="./logo/logo.png" type="image/png">
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

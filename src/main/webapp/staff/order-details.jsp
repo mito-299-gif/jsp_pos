@@ -139,10 +139,10 @@ try {
         </table>
     </div>
 
-    <!-- Print Button -->
+
     <div class="text-center mt-4">
         <button class="btn btn-primary" onclick="printOrder()">
-            <i class="bi bi-printer"></i> ພິມໃບສັ່ງຊື້
+            <i class="bi bi-printer"></i> ພິມໃບບິນ
         </button>
     </div>
 </div>
@@ -165,7 +165,7 @@ function printOrder() {
     const printHTML = '<!DOCTYPE html>' +
         '<html>' +
         '<head>' +
-            '<title>ใบสั่งซื้อสินค้า</title>' +
+            '<title>ໃບບິນ</title>' +
             '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">' +
             '<style>' +
                 'body {' +
@@ -231,7 +231,7 @@ function printOrder() {
         '</head>' +
         '<body>' +
             '<div class="print-header">' +
-                '<h2>ใบสั่งซื้อสินค้า</h2>' +
+                '<h2>ໃບບິນ</h2>' +
                 '<p>Export Order Receipt</p>' +
             '</div>' +
             '<div class="order-details">' +
@@ -271,7 +271,7 @@ function printOrder() {
 <%
 } catch (Exception e) {
     e.printStackTrace();
-    out.println("<div class='alert alert-danger'>ກໍ່ລະດັບຂໍໍໍາລັບສຳເລັດ: " + e.getMessage() + "</div>");
+    out.println("<div class='alert alert-danger'>: " + e.getMessage() + "</div>");
 } finally {
     if (rs != null) try { rs.close(); } catch (SQLException e) {}
     if (ps != null) try { ps.close(); } catch (SQLException e) {}

@@ -1,126 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.*" %>
-<%
+<%@ include file="./class/orders.jsp" %>
 
-if (session.getAttribute("userId") == null) {
-    response.sendRedirect("../index.jsp");
-    return;
-}
-
-DecimalFormat df = new DecimalFormat("#,##0");
-SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-
-String filterType = request.getParameter("filter");
-if (filterType == null) filterType = "all";
-
-String selectedUser = request.getParameter("user");
-
-int currentUserId = (Integer) session.getAttribute("userId");
-
-
-List<Map<String, Object>> allUsers = new ArrayList<>();
-Connection userConn = null;
-PreparedStatement userPs = null;
-ResultSet userRs = null;
-
-try {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    userConn = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-        "root", "Admin"
-    );
-
-    userPs = userConn.prepareStatement("SELECT id, full_name FROM users WHERE id != ? AND full_name != 'Administrator' ORDER BY full_name");
-    userPs.setInt(1, currentUserId);
-    userRs = userPs.executeQuery();
-
-    while (userRs.next()) {
-        Map<String, Object> user = new HashMap<>();
-        user.put("id", userRs.getInt("id"));
-        user.put("full_name", userRs.getString("full_name"));
-        allUsers.add(user);
-    }
-} catch (Exception e) {
-    e.printStackTrace();
-} finally {
-    if (userRs != null) try { userRs.close(); } catch (SQLException e) {}
-    if (userPs != null) try { userPs.close(); } catch (SQLException e) {}
-    if (userConn != null) try { userConn.close(); } catch (SQLException e) {}
-}
-
-
-List<Map<String, Object>> orders = new ArrayList<>();
-Connection conn = null;
-PreparedStatement ps = null;
-ResultSet rs = null;
-
-try {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    conn = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
-        "root", "Admin"
-    );
-
-  
-    StringBuilder sqlBuilder = new StringBuilder(
-        "SELECT DISTINCT e.export_code, e.export_date, e.user_id, e.notes, e.customer, " +
-        "u.full_name as user_name, " +
-        "SUM(e.total_price) as total_amount, " +
-        "COUNT(e.product_id) as item_count " +
-        "FROM exports e " +
-        "LEFT JOIN users u ON e.user_id = u.id "
-    );
-
-
-    if ("my".equals(filterType)) {
-        sqlBuilder.append("WHERE e.user_id = ? ");
-    } else if ("others".equals(filterType) && selectedUser != null && !selectedUser.isEmpty()) {
-        // Filter by specific user
-        sqlBuilder.append("WHERE e.user_id = ? ");
-    } else if ("others".equals(filterType)) {
-        sqlBuilder.append("WHERE e.user_id != ? ");
-    }
-
-    sqlBuilder.append("GROUP BY e.export_code, e.export_date, e.user_id, e.notes, e.customer, u.full_name ");
-    sqlBuilder.append("ORDER BY e.export_date DESC");
-
-    ps = conn.prepareStatement(sqlBuilder.toString());
-
-
-    if ("my".equals(filterType)) {
-        ps.setInt(1, currentUserId);
-    } else if ("others".equals(filterType) && selectedUser != null && !selectedUser.isEmpty()) {
-
-        ps.setInt(1, Integer.parseInt(selectedUser));
-    } else if ("others".equals(filterType)) {
-        ps.setInt(1, currentUserId);
-    }
-    rs = ps.executeQuery();
-
-    while (rs.next()) {
-        Map<String, Object> order = new HashMap<>();
-        order.put("export_code", rs.getString("export_code"));
-        order.put("export_date", rs.getTimestamp("export_date"));
-        order.put("user_name", rs.getString("user_name"));
-        order.put("total_amount", rs.getDouble("total_amount"));
-        order.put("item_count", rs.getInt("item_count"));
-        order.put("notes", rs.getString("notes"));
-        order.put("customer", rs.getString("customer"));
-        orders.add(order);
-    }
-
-} catch (Exception e) {
-    e.printStackTrace();
-} finally {
-    if (rs != null) try { rs.close(); } catch (SQLException e) {}
-    if (ps != null) try { ps.close(); } catch (SQLException e) {}
-    if (conn != null) try { conn.close(); } catch (SQLException e) {}
-}
-%>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -129,41 +9,9 @@ try {
     <title>ລາຍການສັ່ງຊື້ - ລະບົບສົ່ງອອກ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f5f6fa;
-              font-family: "Phetsarath OT";
-        }
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .order-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-        .order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .order-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 15px 15px 0 0;
-        }
-        .order-body {
-            padding: 20px;
-        }
-        .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="icon" href="../logo/logo.png" type="image/png">
+    <link rel="stylesheet" href="./css/orders.css">
+  
 </head>
 <body>
 
@@ -247,7 +95,7 @@ try {
                                     <small><%= dateFormat.format(order.get("export_date")) %></small>
                                 </div>
                                 <div class="text-end">
-                                    <div class="h4 mb-0">₭<%= df.format(order.get("total_amount")) %></div>
+                                    <div class="h4 mb-0"><%= df.format(order.get("total_amount")) %> ກີບ</div>
                                     <small><%= order.get("item_count") %> ລາຍການ</small>
                                 </div>
                             </div>
@@ -299,107 +147,6 @@ try {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function viewOrderDetails(exportCode) {
-          
-            fetch('order-details-fixed.jsp?export_code=' + encodeURIComponent(exportCode))
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('orderDetailsContent').innerHTML = html;
-                    new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
-                })
-                .catch(error => {
-                    console.error('Error loading order details:', error);
-                    alert('ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ');
-                });
-        }
-
-        function printOrder() {
-            console.log('Print function called');
-
-            try {
-           
-                const orderDetails = document.querySelector('.order-details');
-                if (!orderDetails) {
-                    console.error('Order details not found');
-                    alert('ບໍ່ພົບຂໍ້ມູນສຳລັບພິມພິ້ນ');
-                    return;
-                }
-
-          
-                const originalContent = document.body.innerHTML;
-
-         
-                const printHeader = '<div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">' +
-                    '<h2 style="margin: 0; color: #333;">ໃບສັ່ງຊື້ສິນຄ້າ</h2>' +
-                    '<p style="margin: 5px 0;">Export Order Receipt</p>' +
-                    '</div>';
-
-            
-                const orderContent = orderDetails.outerHTML.replace(/max-height: 70vh/g, 'max-height: none')
-                                                           .replace(/overflow-y: auto/g, 'overflow: visible');
-
-        
-                document.body.innerHTML = '<div style="font-family: Arial, sans-serif; margin: 20px;">' +
-                    printHeader +
-                    '<div style="margin-top: 20px;">' + orderContent + '</div>' +
-                    '<div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">' +
-                    'ພິມພິ້ນ: ' + new Date().toLocaleString('th-TH') +
-                    '</div>' +
-                    '</div>';
-
-        
-                const printBtn = document.querySelector('.text-center button');
-                if (printBtn) {
-                    printBtn.style.display = 'none';
-                }
-
-                
-                const style = document.createElement('style');
-                style.textContent = `
-                    @media print {
-                        body { margin: 0; font-size: 12px; }
-                        .order-details { max-height: none !important; overflow: visible !important; }
-                        table { font-size: 11px; width: 100%; }
-                        button { display: none !important; }
-                    }
-                `;
-                document.head.appendChild(style);
-
-            
-                window.print();
-
-           
-                setTimeout(function() {
-                    document.body.innerHTML = originalContent;
-                }, 1000);
-
-            } catch (error) {
-                console.error('Print error:', error);
-                alert('ເກີດຂໍ້ຜິດພາດໃນການພິມພິ້ນ: ' + error.message);
-            }
-        }
-
-       
-        function filterByUser(userId) {
-            if (userId) {
-                window.location.href = '?filter=others&user=' + userId;
-            } else {
-                window.location.href = '?filter=others';
-            }
-        }
-
-        document.getElementById('searchOrder').addEventListener('input', function(e) {
-            const search = e.target.value.toLowerCase();
-            document.querySelectorAll('.order-card').forEach(card => {
-                const orderCode = card.querySelector('.order-header h5').textContent.toLowerCase();
-                if (orderCode.includes(search)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <script src="./script/orders.js"></script>
 </body>
 </html>

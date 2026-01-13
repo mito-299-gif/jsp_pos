@@ -12,6 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="./css/pos.css" rel="stylesheet">
+    <link rel="icon" href="../logo/logo.png" type="image/png">
 </head>
 <body>
     <nav class="navbar navbar-dark navbar-custom mb-4">

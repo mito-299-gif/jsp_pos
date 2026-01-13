@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="./css/edit-order.css" rel="stylesheet">
+    <link rel="icon" href="../logo/logo.png" type="image/png">
+
 </head>
 <body>
     <div class="container-fluid">
@@ -76,7 +78,7 @@
                             <p><strong>ຜູ້ບັນທຶກ:</strong> <%= orderHeader.get("user_name") %></p>
                         </div>
                         <div class="col-md-6 text-end">
-                            <h4 class="text-success">ລວມທັງໝົດ: ₭<%= df.format(orderHeader.get("total_amount")) %></h4>
+                            <h4 class="text-success">ລວມທັງໝົດ: <%= df.format(orderHeader.get("total_amount")) %> ກີບ</h4>
                             <p class="mb-0"><%= orderHeader.get("item_count") %> ລາຍການ</p>
                         </div>
                     </div>
@@ -112,8 +114,8 @@
                                                min="0" max="<%= ((Integer)item.get("stock")) + ((Integer)item.get("quantity")) %>"
                                                class="form-control quantity-input d-inline-block">
                                     </td>
-                                    <td class="text-end">₭<%= df.format(item.get("unit_price")) %></td>
-                                    <td class="text-end" id="total_<%= item.get("id") %>">₭<%= df.format(item.get("total_price")) %></td>
+                                    <td class="text-end"><%= df.format(item.get("unit_price")) %> ກີບ</td>
+                                    <td class="text-end" id="total_<%= item.get("id") %>"><%= df.format(item.get("total_price")) %> ກີບ</td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-outline-danger btn-sm"
                                                 onclick="removeItem(<%= item.get("id") %>)">
@@ -137,7 +139,7 @@
                         </div>
                         <div class="col-md-6 text-end">
                             <div class="mb-3">
-                                <strong>ລວມທັງໝົດໃໝ່: <span id="grand_total" class="text-success h5">₭<%= df.format(orderHeader.get("total_amount")) %></span></strong>
+                                <strong>ລວມທັງໝົດໃໝ່: <span id="grand_total" class="text-success h5"><%= df.format(orderHeader.get("total_amount")) %> ກີບ</span></strong>
                             </div>
                             <button type="submit" class="btn btn-primary me-2">
                                 <i class="bi bi-check-circle"></i> ບັນທຶກການແກ້ໄຂ
@@ -168,11 +170,11 @@
                 const qty_<%= item.get("id") %> = document.querySelector('input[name="quantity_<%= item.get("id") %>"]').value;
                 const unitPrice_<%= item.get("id") %> = <%= item.get("unit_price") %>;
                 const total_<%= item.get("id") %> = qty_<%= item.get("id") %> * unitPrice_<%= item.get("id") %>;
-                document.getElementById('total_<%= item.get("id") %>').textContent = '₭' + total_<%= item.get("id") %>.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('total_<%= item.get("id") %>').textContent = '' + total_<%= item.get("id") %>.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 grandTotal += total_<%= item.get("id") %>;
             <% } %>
 
-            document.getElementById('grand_total').textContent = '₭' + grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('grand_total').textContent = '' + grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
         function removeItem(itemId) {
