@@ -15,7 +15,7 @@ if ("POST".equals(request.getMethod())) {
             // Connect to database
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
+                "jdbc:mysql://db:3306/export_pos_db?useSSL=false&serverTimezone=UTC",
                 "root", "Admin"
             );
 
